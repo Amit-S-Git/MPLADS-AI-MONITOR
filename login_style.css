@@ -1,0 +1,169 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: linear-gradient(
+        135deg,
+        #0B1F3A,
+        #1E40AF
+    );
+
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+}
+
+.login-card {
+
+    width: 450px;
+
+    background: white;
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h1 {
+    color: #0B1F3A;
+    margin-bottom: 10px;
+}
+
+.login-header p {
+    color: #64748b;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.input-group input {
+
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+}
+
+.captcha-box {
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+.captcha-code {
+
+    flex: 1;
+
+    background: #f1f5f9;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 10px;
+
+    padding: 12px;
+
+    text-align: center;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    letter-spacing: 4px;
+
+    color: #1E40AF;
+}
+
+.refresh-btn {
+
+    border: none;
+
+    background: #1E40AF;
+
+    color: white;
+
+    padding: 12px 15px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+}
+
+.login-btn {
+
+    width: 100%;
+
+    padding: 14px;
+
+    background: #1E40AF;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.login-btn:hover {
+    background: #0B1F3A;
+}
+
+.bottom-links {
+
+    margin-top: 20px;
+
+    display: flex;
+
+    justify-content: space-between;
+}
+
+.bottom-links a {
+
+    text-decoration: none;
+
+    color: #1E40AF;
+
+    font-size: 14px;
+}

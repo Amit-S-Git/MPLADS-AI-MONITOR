@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MPLADS Map View</title>
+<script>
+        if (sessionStorage.getItem("mpladsLoggedIn") !== "true") {
+            window.location.replace("login.html?next=map.html");
+        }
+    </script>
+<link href="style.css" rel="stylesheet"/>
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
+</link><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/><link href="sidebar.css" rel="stylesheet"/><link rel="stylesheet" href="gov_theme.css">
+</head>
+<body>
+<div class="app">
+<!-- SIDEBAR -->
+<aside class="sidebar unified-sidebar"><div class="logo unified-logo"><div class="logo-box">AI</div><div><h2>MPLADS</h2><p>AI MONITOR</p></div></div><nav class="unified-nav" id="mainNav"><a class="unified-nav-item" href="home.html"><i aria-hidden="true" class="fa-solid fa-house nav-icon"></i><span>Home</span></a><a class="unified-nav-item" href="index.html"><i aria-hidden="true" class="fa-solid fa-table-columns nav-icon"></i><span>Dashboard</span></a><a class="unified-nav-item" href="projects.html"><i aria-hidden="true" class="fa-regular fa-folder nav-icon"></i><span>Projects</span></a><a class="unified-nav-item" href="alerts.html"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation nav-icon"></i><span>Risk Alerts</span></a><a class="unified-nav-item" href="analytics.html"><i aria-hidden="true" class="fa-solid fa-chart-column nav-icon"></i><span>Analytics</span></a><a aria-current="page" class="unified-nav-item active" href="map.html"><i aria-hidden="true" class="fa-regular fa-map nav-icon"></i><span>Map View</span></a><a class="unified-nav-item" href="reports.html"><i aria-hidden="true" class="fa-regular fa-file-lines nav-icon"></i><span>Reports</span></a><a class="unified-nav-item" href="settings.html"><i aria-hidden="true" class="fa-solid fa-gear nav-icon"></i><span>Settings</span></a></nav><div class="user-box unified-user-box"><div aria-hidden="true" class="officer-avatar">NO</div><div class="officer-meta"><b>Nodal Officer</b><p>Rajasthan</p><span><i aria-hidden="true" class="online-dot"></i>Online</span></div></div></aside>
+<!-- MAIN CONTENT -->
+<main class="main-content">
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" type="button">
+<i class="fa-solid fa-bars" aria-hidden="true"></i>
+</button>
+<div class="page-header">
+<div>
+<h1>
+                        🗺️ MPLADS Project Map
+                    </h1>
+<p>
+                        District-wise project risk
+                        monitoring across Rajasthan
+                    </p>
+</div>
+<button onclick="loadMapData()">
+
+                    🔄 Refresh
+
+                </button>
+</div>
+<!-- MAP AREA -->
+<section class="map-panel">
+<div class="map-header">
+<h2>
+                        Rajasthan Project Overview
+                    </h2>
+<div class="map-legend">
+<span>
+                            🔴 High Risk
+                        </span>
+<span>
+                            🟠 Medium Risk
+                        </span>
+<span>
+                            🟢 Low Risk
+                        </span>
+</div>
+</div>
+<div class="map-container">
+<div id="projectMap"></div>
+</div>
+</section>
+<!-- DISTRICT SUMMARY -->
+<section class="analytics-panel">
+<h2>
+                    📍 District Risk Summary
+                </h2>
+<div id="districtSummary">
+
+                    Loading district data...
+
+                </div>
+</section>
+</main>
+</div>
+<script>
+
+        let projectMap;
+        let projectMarkers = [];
+
+        const API_BASE = window.location.origin;
+
+        const districtCoordinates = {
+            Jaipur: [26.9124, 75.7873],
+            Kota: [25.2138, 75.8648],
+            Ajmer: [26.4499, 74.6399],
+            Jodhpur: [26.2389, 73.0243],
+            Udaipur: [24.5854, 73.7125]
+        };
+
+
+        function escapeHTML(value) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent =
+                value ?? "";
+
+            return div.innerHTML;
+        }
+
+
+        function getRiskColor(level) {
+
+            if (level === "High") {
+                return "#ef4444";
+            }
+
+            if (level === "Medium") {
+                return "#f59e0b";
+            }
+
+            return "#22c55e";
+        }
+
+
+        function calculateRiskLocal(project) {
+            let risk = 0;
+            const sanctioned = Number(project.sanctioned || 0);
+            const spent = Number(project.spent || 0);
+            const progress = Number(project.progress || 0);
+            if (sanctioned > 0 && spent > sanctioned) {
+                const overrun = ((spent - sanctioned) / sanctioned) * 100;
+                risk += overrun > 20 ? 50 : 25;
+            }
+            if (progress < 50) risk += 35;
+            else if (progress < 70) risk += 20;
+            const utilization = sanctioned > 0 ? (spent / sanctioned) * 100 : 0;
+            if (utilization < 65 && progress > 60) risk += 20;
+            risk = Math.min(risk, 100);
+            return { score: risk, level: risk >= 70 ? "High" : risk >= 40 ? "Medium" : "Low" };
+        }
+
+        function normalizeProject(project) {
+            const item = { ...project };
+            if (item.risk_score === undefined || item.risk_level === undefined) {
+                const analysis = calculateRiskLocal(item);
+                item.risk_score = analysis.score;
+                item.risk_level = analysis.level;
+            }
+            return item;
+        }
+
+        async function loadProjectsResilient() {
+            let response;
+            try {
+                response = await fetch(`${API_BASE}/api/projects`, { cache: "no-store" });
+                if (!response.ok) throw new Error(`Projects API returned ${response.status}`);
+            } catch (apiError) {
+                console.warn("Projects API unavailable; using projects_data.json fallback.", apiError);
+                response = await fetch(`${API_BASE}/projects_data.json`, { cache: "no-store" });
+                if (!response.ok) throw new Error("Unable to load project data");
+            }
+            const data = await response.json();
+            if (!Array.isArray(data)) throw new Error("Project data returned invalid data");
+            return data.map(normalizeProject);
+        }
+
+
+        function initializeMap() {
+
+            if (projectMap) {
+                return;
+            }
+
+            projectMap =
+                L.map("projectMap")
+                    .setView(
+                        [26.5, 74.5],
+                        7
+                    );
+
+            L.tileLayer(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+                    attribution:
+                        "&copy; OpenStreetMap contributors"
+                }
+            ).addTo(projectMap);
+        }
+
+
+        function clearMarkers() {
+
+            projectMarkers.forEach(
+                marker => {
+
+                    projectMap.removeLayer(
+                        marker
+                    );
+
+                }
+            );
+
+            projectMarkers = [];
+        }
+
+
+        async function loadMapData() {
+
+            const summary =
+                document.getElementById(
+                    "districtSummary"
+                );
+
+            try {
+
+                if (typeof L === "undefined") {
+                    throw new Error("Leaflet map library did not load. Check internet access and refresh the page.");
+                }
+
+                const projects = await loadProjectsResilient();
+
+                initializeMap();
+
+                clearMarkers();
+
+
+                /* =========================
+                   GROUP BY DISTRICT
+                   ========================= */
+
+                const districts = {};
+
+                projects.forEach(
+                    project => {
+
+                        if (
+                            !districts[
+                            project.district
+                            ]
+                        ) {
+
+                            districts[
+                                project.district
+                            ] = [];
+
+                        }
+
+                        districts[
+                            project.district
+                        ].push(project);
+
+                    }
+                );
+
+
+                /* =========================
+                   MAP MARKERS
+                   ========================= */
+
+                Object.entries(
+                    districts
+                ).forEach(
+                    ([district, districtProjects]) => {
+
+                        const coordinates =
+                            districtCoordinates[
+                            district
+                            ];
+
+                        if (!coordinates) {
+                            return;
+                        }
+
+
+                        const high =
+                            districtProjects.filter(
+                                p =>
+                                    p.risk_level ===
+                                    "High"
+                            ).length;
+
+                        const medium =
+                            districtProjects.filter(
+                                p =>
+                                    p.risk_level ===
+                                    "Medium"
+                            ).length;
+
+                        const low =
+                            districtProjects.filter(
+                                p =>
+                                    p.risk_level ===
+                                    "Low"
+                            ).length;
+
+
+                        let districtLevel =
+                            "Low";
+
+                        if (high > 0) {
+                            districtLevel = "High";
+                        }
+                        else if (medium > 0) {
+                            districtLevel = "Medium";
+                        }
+
+
+                        const marker =
+                            L.circleMarker(
+                                coordinates,
+                                {
+                                    radius: 14,
+                                    fillColor:
+                                        getRiskColor(
+                                            districtLevel
+                                        ),
+                                    color:
+                                        "#ffffff",
+                                    weight: 3,
+                                    opacity: 1,
+                                    fillOpacity: 0.9
+                                }
+                            );
+
+
+                        const projectList =
+                            districtProjects
+                                .map(
+                                    project => `
+
+                                        <div style="
+                                            padding:7px 0;
+                                            border-bottom:1px solid #eee;
+                                        ">
+
+                                            <b>
+                                                ${escapeHTML(
+                                        project.id
+                                    )}
+                                            </b>
+
+                                            <br>
+
+                                            ${escapeHTML(
+                                        project.name
+                                    )}
+
+                                            <br>
+
+                                            <small>
+                                                Risk:
+                                                <b>
+                                                    ${project.risk_score}/100
+                                                </b>
+                                                •
+                                                Progress:
+                                                ${project.progress}%
+                                            </small>
+
+                                        </div>
+
+                                    `
+                                )
+                                .join("");
+
+
+                        marker.bindPopup(`
+
+                            <div class="map-popup">
+
+                                <h3>
+                                    📍 ${escapeHTML(district)}
+                                </h3>
+
+                                <p>
+                                    <b>
+                                        ${districtProjects.length}
+                                        Projects
+                                    </b>
+                                </p>
+
+                                <p>
+                                    🔴 High Risk:
+                                    <b>${high}</b>
+                                </p>
+
+                                <p>
+                                    🟠 Medium Risk:
+                                    <b>${medium}</b>
+                                </p>
+
+                                <p>
+                                    🟢 Low Risk:
+                                    <b>${low}</b>
+                                </p>
+
+                                <hr>
+
+                                ${projectList}
+
+                            </div>
+
+                        `);
+
+
+                        marker.addTo(
+                            projectMap
+                        );
+
+                        projectMarkers.push(
+                            marker
+                        );
+
+                    }
+                );
+
+
+                /* =========================
+                   DISTRICT SUMMARY
+                   ========================= */
+
+                summary.innerHTML = "";
+
+                const districtEntries =
+                    Object.entries(districts);
+
+
+                if (
+                    districtEntries.length === 0
+                ) {
+
+                    summary.innerHTML =
+                        `<p style="
+                            color:#7b8494;
+                            font-size:12px;
+                        ">
+                            No project data available.
+                        </p>`;
+
+                    return;
+                }
+
+
+                districtEntries
+                    .sort(
+                        (a, b) =>
+                            b[1].length -
+                            a[1].length
+                    )
+                    .forEach(
+                        ([district, districtProjects]) => {
+
+                            const high =
+                                districtProjects.filter(
+                                    p =>
+                                        p.risk_level ===
+                                        "High"
+                                ).length;
+
+                            const medium =
+                                districtProjects.filter(
+                                    p =>
+                                        p.risk_level ===
+                                        "Medium"
+                                ).length;
+
+                            const low =
+                                districtProjects.filter(
+                                    p =>
+                                        p.risk_level ===
+                                        "Low"
+                                ).length;
+
+
+                            const row =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            row.className =
+                                "district-row";
+
+                            row.innerHTML = `
+
+                                <span>
+
+                                    <b>
+                                        ${escapeHTML(
+                                district
+                            )}
+                                    </b>
+
+                                    —
+                                    ${districtProjects.length}
+                                    Projects
+
+                                </span>
+
+                                <span>
+
+                                    🔴 ${high}
+                                    &nbsp;&nbsp;
+                                    🟠 ${medium}
+                                    &nbsp;&nbsp;
+                                    🟢 ${low}
+
+                                </span>
+
+                            `;
+
+
+                            row.style.cursor =
+                                "pointer";
+
+                            row.title =
+                                "Click to view district on map";
+
+
+                            row.addEventListener(
+                                "click",
+                                function () {
+
+                                    const coordinates =
+                                        districtCoordinates[
+                                        district
+                                        ];
+
+                                    if (!coordinates) {
+                                        return;
+                                    }
+
+                                    projectMap.setView(
+                                        coordinates,
+                                        10
+                                    );
+
+                                    const marker =
+                                        projectMarkers.find(
+                                            m => {
+
+                                                const latLng =
+                                                    m.getLatLng();
+
+                                                return (
+                                                    Math.abs(
+                                                        latLng.lat -
+                                                        coordinates[0]
+                                                    ) < 0.0001 &&
+                                                    Math.abs(
+                                                        latLng.lng -
+                                                        coordinates[1]
+                                                    ) < 0.0001
+                                                );
+
+                                            }
+                                        );
+
+                                    if (marker) {
+                                        marker.openPopup();
+                                    }
+
+                                }
+                            );
+
+
+                            summary.appendChild(
+                                row
+                            );
+
+                        }
+                    );
+
+
+                console.log(
+                    "Map loaded successfully:",
+                    projects
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Map loading error:",
+                    error
+                );
+
+                summary.innerHTML =
+                    `<p style="
+                        color:#dc2626;
+                        font-size:12px;
+                    ">
+                        Unable to load map data.
+                        Check Flask server.
+                    </p>`;
+
+            }
+
+        }
+
+
+        window.addEventListener("load", function () {
+            loadMapData();
+        });
+
+    </script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+<script src="script.js"></script>
+<script src="gov_ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MPLADS AI - Projects</title>
+<script>
+        if (sessionStorage.getItem("mpladsLoggedIn") !== "true") {
+            window.location.replace("login.html?next=projects.html");
+        }
+    </script>
+<link href="style.css" rel="stylesheet"/>
+<style>
+        .ai-button {
+            border: none;
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .ai-button:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        .ai-popup {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 26, 49, 0.55);
+            place-items: center;
+            z-index: 1000;
+        }
+
+        .ai-box {
+            background: white;
+            width: 480px;
+            max-width: 90%;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .ai-box h2 {
+            margin-bottom: 5px;
+        }
+
+        .ai-project {
+            color: #6b7280;
+            margin-bottom: 18px;
+        }
+
+        .score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #dc2626;
+            margin: 10px 0 18px;
+        }
+
+        .risk-meter {
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .risk-meter span {
+            display: block;
+            height: 100%;
+            background: #ef4444;
+            border-radius: 20px;
+        }
+
+        .risk-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .recommendation {
+            margin-top: 15px;
+            padding: 12px;
+            background: #fff7ed;
+            color: #9a3412;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .close-ai {
+            margin-top: 18px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .add-project-btn {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .add-project-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .add-project-popup {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(7, 26, 49, 0.55);
+            z-index: 2000;
+            place-items: center;
+        }
+
+        .add-project-popup.show {
+            display: grid;
+        }
+
+        .add-project-box {
+            width: 500px;
+            max-width: 90%;
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .add-project-box h2 {
+            margin-bottom: 5px;
+        }
+
+        .add-project-box>p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-grid input,
+        .form-grid select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #dce2eb;
+            border-radius: 8px;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+
+        .money-unit-note {
+            grid-column: 1 / -1;
+            margin: -2px 0 2px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .money-unit-note strong {
+            color: #0f172a;
+        }
+
+        .popup-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .cancel-btn,
+        .save-project-btn {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background: #eef2f7;
+            color: #334155;
+        }
+
+        .save-project-btn {
+            background: #2563eb;
+            color: white;
+        }
+    </style>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/><link href="sidebar.css" rel="stylesheet"/><link rel="stylesheet" href="gov_theme.css">
+</head>
+<body>
+<div class="app">
+<!-- SIDEBAR -->
+<aside class="sidebar unified-sidebar"><div class="logo unified-logo"><div class="logo-box">AI</div><div><h2>MPLADS</h2><p>AI MONITOR</p></div></div><nav class="unified-nav" id="mainNav"><a class="unified-nav-item" href="home.html"><i aria-hidden="true" class="fa-solid fa-house nav-icon"></i><span>Home</span></a><a class="unified-nav-item" href="index.html"><i aria-hidden="true" class="fa-solid fa-table-columns nav-icon"></i><span>Dashboard</span></a><a aria-current="page" class="unified-nav-item active" href="projects.html"><i aria-hidden="true" class="fa-regular fa-folder nav-icon"></i><span>Projects</span></a><a class="unified-nav-item" href="alerts.html"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation nav-icon"></i><span>Risk Alerts</span></a><a class="unified-nav-item" href="analytics.html"><i aria-hidden="true" class="fa-solid fa-chart-column nav-icon"></i><span>Analytics</span></a><a class="unified-nav-item" href="map.html"><i aria-hidden="true" class="fa-regular fa-map nav-icon"></i><span>Map View</span></a><a class="unified-nav-item" href="reports.html"><i aria-hidden="true" class="fa-regular fa-file-lines nav-icon"></i><span>Reports</span></a><a class="unified-nav-item" href="settings.html"><i aria-hidden="true" class="fa-solid fa-gear nav-icon"></i><span>Settings</span></a></nav><div class="user-box unified-user-box"><div aria-hidden="true" class="officer-avatar">NO</div><div class="officer-meta"><b>Nodal Officer</b><p>Rajasthan</p><span><i aria-hidden="true" class="online-dot"></i>Online</span></div></div></aside>
+<!-- MAIN CONTENT -->
+<main class="main">
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" type="button">
+<i class="fa-solid fa-bars" aria-hidden="true"></i>
+</button>
+<!-- HEADER -->
+<header class="header">
+<div>
+<h1>MPLADS Projects</h1>
+<p>Monitor and analyze development projects using AI</p>
+</div>
+<div class="header-right">
+<button class="add-project-btn" onclick="openAddProject()">
+                        ➕ Add Project
+                    </button>
+<select id="districtFilter">
+<option value="all">
+                            All Districts
+                        </option>
+<option value="Jaipur">
+                            Jaipur
+                        </option>
+<option value="Kota">
+                            Kota
+                        </option>
+<option value="Ajmer">
+                            Ajmer
+                        </option>
+<option value="Jodhpur">
+                            Jodhpur
+                        </option>
+<option value="Udaipur">
+                            Udaipur
+                        </option>
+</select>
+<select id="statusFilter">
+<option value="all">
+                            All Status
+                        </option>
+<option value="Completed">
+                            Completed
+                        </option>
+<option value="Ongoing">
+                            Ongoing
+                        </option>
+<option value="Delayed">
+                            Delayed
+                        </option>
+</select>
+</div>
+</header>
+<!-- SEARCH -->
+<div class="panel" style="margin-bottom:15px;">
+<input id="searchBox" placeholder="🔍 Search project by ID, name or district..." style="
+                width:100%;
+                padding:13px;
+                border:1px solid #dce2eb;
+                border-radius:8px;
+                outline:none;
+            " type="text"/>
+</div>
+<!-- PROJECT TABLE -->
+<div class="panel">
+<div class="panel-header">
+<h3>All Projects</h3>
+<span class="count" id="projectCount">
+                        10 Projects
+                    </span>
+</div>
+<table>
+<thead>
+<tr>
+<th>Project ID</th>
+<th>Project Name</th>
+<th>District</th>
+<th>Sanctioned</th>
+<th>Spent</th>
+<th>Progress</th>
+<th>Status</th>
+<th>Risk</th>
+<th>AI Analysis</th>
+</tr>
+</thead>
+<tbody id="projectTable">
+<!-- PROJECT 1 -->
+<tr>
+<td>MPL-1001</td>
+<td>Road Construction</td>
+<td>Jaipur</td>
+<td>₹10 L</td>
+<td>₹9.2 L</td>
+<td>92%</td>
+<td>
+<span class="high" style="background:#dcfce7;color:#15803d;">
+                                    Completed
+                                </span>
+</td>
+<td>18/100</td>
+<td>
+<button class="ai-button" onclick="analyzeRisk('MPL-1001',18,8,92)">
+                                    🤖 Analyze
+                                </button>
+</td>
+</tr>
+<!-- PROJECT 2 -->
+<tr>
+<td>MPL-1002</td>
+<td>Community Hall</td>
+<td>Kota</td>
+<td>₹15 L</td>
+<td>₹11 L</td>
+<td>73%</td>
+<td>
+<span class="medium">
+                                    Ongoing
+                                </span>
+</td>
+<td>42/100</td>
+<td>
+<button class="ai-button" onclick="analyzeRisk('MPL-1002',42,20,73)">
+                                    🤖 Analyze
+                                </button>
+</td>
+</tr>
+<!-- PROJECT 3 -->
+<tr>
+<td>MPL-1003</td>
+<td>Water Tank</td>
+<td>Ajmer</td>
+<td>₹8 L</td>
+<td>₹7.8 L</td>
+<td>98%</td>
+<td>
+<span class="high" style="background:#dcfce7;color:#15803d;">
+                                    Completed
+                                </span>
+</td>
+<td>12/100</td>
+<td>
+<button class="ai-button" onclick="analyzeRisk('MPL-1003',12,3,98)">
+                                    🤖 Analyze
+                                </button>
+</td>
+</tr>
+<!-- PROJECT 4 -->
+<tr>
+<td>MPL-1004</td>
+<td>School Building</td>
+<td>Jodhpur</td>
+<td>₹20 L</td>
+<td>₹25 L</td>
+<td>61%</td>
+<td>
+<span class="high">
+                                    Delayed
+                                </span>
+</td>
+<td>
+<b style="color:#dc2626;">
+                                    87/100
+                                </b>
+</td>
+<td>
+<button class="ai-button" onclick="analyzeRisk('MPL-1004',87,42,61)">
+                                    🤖 Analyze
+                                </button>
+</td>
+</tr>
+<!-- PROJECT 5 -->
+<tr>
+<td>MPL-1005</td>
+<td>Street Lighting</td>
+<td>Jaipur</td>
+<td>₹6 L</td>
+<td>₹5.5 L</td>
+<td>90%</td>
+<td>
+<span class="high" style="background:#dcfce7;color:#15803d;">
+                                    Completed
+                                </span>
+</td>
+<td>15/100</td>
+<td>
+<button class="ai-button" onclick="analyzeRisk('MPL-1005',15,4,90)">
+                                    🤖 Analyze
+                                </button>
+</td>
+</tr>
+<!-- PROJECT 6 -->
+<tr>
+<td>MPL-1006</td>
+<td>Drainage System</td>
+<td>Kota</td>
+<td>₹12 L</td>
+<td>₹14.5 L</td>
+<td>48%</td>
+<td>
+<span class="high">
+                                    Delayed
+                                </span>
+</td>
+<td>
+<b style="color:#dc2626;">
+                                    91/100
+                                </b>
+</td>
+<td>
+<button class="ai-button" onclick="analyzeRisk('MPL-1006',91,55,48)">
+                                    🤖 Analyze
+                                </button>
+</td>
+</tr>
+<!-- PROJECT 7 -->
+<tr>
+<td>MPL-1007</td>
+<td>Health Centre</td>
+<td>Udaipur</td>
+<td>₹25 L</td>
+<td>₹18 L</td>
+<td>72%</td>
+<td>
+<span class="medium">
+                                    Ongoing
+                                </span>
+</td>
+<td>39/100</td>
+<td>
+<button class="ai-button" onclick="analyzeRisk('MPL-1007',39,18,72)">
+                                    🤖 Analyze
+                                </button>
+</td>
+</tr>
+<!-- PROJECT 8 -->
+<tr>
+<td>MPL-1008</td>
+<td>Community Park</td>
+<td>Ajmer</td>
+<td>₹9 L</td>
+<td>₹8.5 L</td>
+<td>94%</td>
+<td>
+<span class="high" style="background:#dcfce7;color:#15803d;">
+                                    Completed
+                                </span>
+</td>
+<td>16/100</td>
+<td>
+<button class="ai-button" onclick="analyzeRisk('MPL-1008',16,5,94)">
+                                    🤖 Analyze
+                                </button>
+</td>
+</tr>
+<!-- PROJECT 9 -->
+<tr>
+<td>MPL-1009</td>
+<td>Road Repair</td>
+<td>Jodhpur</td>
+<td>₹11 L</td>
+<td>₹17 L</td>
+<td>40%</td>
+<td>
+<span class="high">
+                                    Delayed
+                                </span>
+</td>
+<td>
+<b style="color:#dc2626;">
+                                    89/100
+                                </b>
+</td>
+<td>
+<button class="ai-button" onclick="analyzeRisk('MPL-1009',89,63,40)">
+                                    🤖 Analyze
+                                </button>
+</td>
+</tr>
+<!-- PROJECT 10 -->
+<tr>
+<td>MPL-1010</td>
+<td>Drinking Water Facility</td>
+<td>Udaipur</td>
+<td>₹7 L</td>
+<td>₹4.5 L</td>
+<td>65%</td>
+<td>
+<span class="medium">
+                                    Ongoing
+                                </span>
+</td>
+<td>35/100</td>
+<td>
+<button class="ai-button" onclick="analyzeRisk('MPL-1010',35,12,65)">
+                                    🤖 Analyze
+                                </button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main></div>
+<!-- AI POPUP -->
+<div class="ai-popup" id="aiPopup">
+<div class="ai-box">
+<h2>🤖 AI Risk Analysis</h2>
+<p class="ai-project" id="aiProject">
+</p>
+<div class="score" id="aiScore">
+</div>
+<div class="risk-meter">
+<span id="riskMeter"></span>
+</div>
+<h3>Detected Risk Indicators</h3>
+<div id="riskIndicators">
+</div>
+<div class="recommendation">
+
+                ⚠️ <b>Recommendation:</b>
+
+                Manual verification is recommended
+                for this project.
+
+            </div>
+<button class="close-ai" onclick="closeAI()">
+
+                Close
+
+            </button>
+</div>
+</div>
+<script>
+
+        const searchBox =
+            document.getElementById("searchBox");
+
+        const districtFilter =
+            document.getElementById("districtFilter");
+
+        const statusFilter =
+            document.getElementById("statusFilter");
+
+
+
+
+        /* SEARCH + FILTER */
+
+        function filterProjects() {
+
+            const search =
+                searchBox.value.toLowerCase();
+
+            const district =
+                districtFilter.value;
+
+            const status =
+                statusFilter.value;
+            const rows =
+                document.querySelectorAll("#projectTable tr");
+
+            let visible = 0;
+
+
+            rows.forEach(row => {
+
+                const text =
+                    row.innerText.toLowerCase();
+
+                const rowDistrict =
+                    row.children[2].innerText.trim();
+
+                const rowStatus =
+                    row.children[6].innerText.trim();
+
+                const matchesSearch =
+                    text.includes(search);
+
+                const matchesDistrict =
+                    district === "all" ||
+                    rowDistrict.toLowerCase() ===
+                    district.toLowerCase();
+
+                const matchesStatus =
+                    status === "all" ||
+                    rowStatus.toLowerCase() ===
+                    status.toLowerCase();
+
+
+                if (
+                    matchesSearch &&
+                    matchesDistrict &&
+                    matchesStatus
+                ) {
+
+                    row.style.display = "";
+                    visible++;
+
+                } else {
+
+                    row.style.display = "none";
+
+                }
+
+            });
+
+
+            document.getElementById("projectCount")
+                .innerText = visible + " Projects";
+
+        }
+
+
+        searchBox.addEventListener(
+            "input",
+            filterProjects
+        );
+
+        districtFilter.addEventListener(
+            "change",
+            filterProjects
+        );
+
+        statusFilter.addEventListener(
+            "change",
+            filterProjects
+        );
+
+
+        /* AI ANALYSIS */
+
+        function analyzeRisk(
+            project,
+            score,
+            costPatternScore,
+            progress
+        ) {
+
+            document.getElementById("aiProject")
+                .innerText =
+                "Project ID: " + project;
+
+
+            document.getElementById("aiScore")
+                .innerText =
+                "Risk Score: " + score + "/100";
+
+
+            document.getElementById("riskMeter")
+                .style.width =
+                score + "%";
+
+
+            let indicators = "";
+
+
+            if (score >= 70) {
+
+                indicators +=
+                    '<div class="risk-item">🔴 High overall risk detected</div>';
+
+            }
+            else if (score >= 40) {
+
+                indicators +=
+                    '<div class="risk-item">🟠 Moderate risk pattern detected</div>';
+
+            }
+            else {
+
+                indicators +=
+                    '<div class="risk-item">🟢 No major risk indicator detected</div>';
+
+            }
+
+
+            if (costPatternScore > 30) {
+
+                indicators +=
+                    '<div class="risk-item">💰 Unusual expenditure / cost pattern</div>';
+
+            }
+
+
+            if (progress < 60) {
+
+                indicators +=
+                    '<div class="risk-item">⏳ Low project progress detected</div>';
+
+            }
+
+
+            if (score >= 80) {
+
+                indicators +=
+                    '<div class="risk-item">⚠️ Requires priority verification</div>';
+
+            }
+
+
+            document.getElementById("riskIndicators")
+                .innerHTML =
+                indicators;
+
+
+            document.getElementById("aiPopup")
+                .style.display =
+                "grid";
+
+        }
+
+
+        /* CLOSE POPUP */
+
+        function closeAI() {
+
+            document.getElementById("aiPopup")
+                .style.display =
+                "none";
+
+        }
+        async function loadProjectsFromAPI() {
+
+            try {
+
+                const response = await fetch(
+                    window.location.origin + "/api/projects"
+                );
+
+                const projects = await response.json();
+
+                console.log("Projects loaded from Flask:", projects);
+
+                const tableBody =
+                    document.querySelector("table tbody");
+
+                if (!tableBody) {
+                    console.error("Table body not found");
+                    return;
+                }
+
+                tableBody.innerHTML = "";
+
+                projects.forEach(project => {
+
+                    const utilization =
+                        (project.spent / project.sanctioned) * 100;
+
+                    let status = "Ongoing";
+
+                    if (project.progress >= 90) {
+                        status = "Completed";
+                    } else if (project.progress < 70) {
+                        status = "Delayed";
+                    }
+
+                    const row = document.createElement("tr");
+
+                    row.innerHTML = `
+                <td>${project.id}</td>
+
+                <td>${project.name}</td>
+
+                <td>${project.district}</td>
+
+                <td>₹${project.sanctioned} L</td>
+
+                <td>₹${project.spent} L</td>
+
+                <td>${project.progress}%</td>
+
+                <td>
+                    <span class="status">
+                        ${status}
+                    </span>
+                </td>
+
+                <td>
+                    <b>${project.risk_score}/100</b>
+                </td>
+
+                <td>
+                    <button
+    class="ai-button"
+    onclick="analyzeRisk(
+        '${project.id}',
+        ${project.risk_score},
+        ${project.spent},
+        ${project.progress}
+    )">
+    🤖 Analyze
+</button>
+                </td>
+            `;
+
+                    tableBody.appendChild(row);
+
+                });
+                filterProjects();
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Backend connection error:",
+                    error
+                );
+
+            }
+
+        }
+
+        function openAddProject() {
+            document
+                .getElementById("addProjectPopup")
+                .classList.add("show");
+        }
+
+        function closeAddProject() {
+            document
+                .getElementById("addProjectPopup")
+                .classList.remove("show");
+        }
+        async function addProject() {
+
+            const name =
+                document.getElementById("newProjectName").value.trim();
+
+            const district =
+                document.getElementById("newProjectDistrict").value;
+
+            const sanctioned =
+                document.getElementById("newProjectSanctioned").value;
+
+            const spent =
+                document.getElementById("newProjectSpent").value;
+
+            const amountUnit =
+                document.getElementById("newProjectAmountUnit").value;
+
+            const status =
+                document.getElementById("newProjectStatus").value;
+
+            const progress =
+                document.getElementById("newProjectProgress").value;
+
+
+            if (
+                !name ||
+                !district ||
+                !sanctioned ||
+                !spent ||
+                !amountUnit ||
+                !status ||
+                progress === ""
+            ) {
+
+                alert("Please fill all project details.");
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        window.location.origin + "/api/projects",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                name: name,
+                                district: district,
+                                sanctioned: sanctioned,
+                                spent: spent,
+                                amount_unit: amountUnit,
+                                status: status,
+                                progress: progress
+
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.error || data.message || "Project could not be added"
+                    );
+
+                }
+
+
+                alert("Project added successfully!");
+
+
+                closeAddProject();
+
+
+                // Clear form
+
+                document.getElementById(
+                    "newProjectName"
+                ).value = "";
+
+                document.getElementById(
+                    "newProjectDistrict"
+                ).value = "";
+
+                document.getElementById(
+                    "newProjectSanctioned"
+                ).value = "";
+
+                document.getElementById(
+                    "newProjectSpent"
+                ).value = "";
+
+                document.getElementById(
+                    "newProjectAmountUnit"
+                ).value = "lakh";
+
+                document.getElementById(
+                    "newProjectStatus"
+                ).value = "";
+
+                document.getElementById(
+                    "newProjectProgress"
+                ).value = "";
+
+
+                // Reload projects on the Projects page
+                loadProjectsFromAPI();
+
+                // Refresh the dashboard data and recently added projects
+                // if those functions are available on this page.
+                if (typeof loadDashboardData === "function") {
+                    loadDashboardData();
+                }
+
+                if (typeof loadRecentProjects === "function") {
+                    loadRecentProjects();
+                }
+
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Add project error:",
+                    error
+                );
+
+                alert(
+                    error.message || "Project could not be added. Check Flask server."
+                );
+
+            }
+
+        }
+        loadProjectsFromAPI();
+
+    </script>
+
+
+<script src="script.js"></script>
+<!-- ADD PROJECT POPUP -->
+<div class="add-project-popup" id="addProjectPopup">
+<div class="add-project-box">
+<h2>➕ Add New Project</h2>
+<p>Enter the MPLADS project details</p>
+<div class="form-grid">
+<input id="newProjectName" placeholder="Project Name" type="text"/>
+<select id="newProjectDistrict">
+<option value="">Select District</option>
+<option value="Jaipur">Jaipur</option>
+<option value="Kota">Kota</option>
+<option value="Ajmer">Ajmer</option>
+<option value="Jodhpur">Jodhpur</option>
+<option value="Udaipur">Udaipur</option>
+</select>
+<select aria-label="Money unit" id="newProjectAmountUnit">
+<option value="lakh">Amount Unit: ₹ Lakh</option>
+<option value="rupees">Amount Unit: ₹ Rupees</option>
+<option value="crore">Amount Unit: ₹ Crore</option>
+</select>
+<div class="money-unit-note">
+                    Choose the unit you are entering. <strong>Example:</strong> ₹1,00,000 = 100000 Rupees = 1 Lakh = 0.01 Crore.
+                </div>
+<input id="newProjectSanctioned" min="0" placeholder="Sanctioned Amount" step="any" type="number"/>
+<input id="newProjectSpent" min="0" placeholder="Spent Amount" step="any" type="number"/>
+<select id="newProjectStatus">
+<option value="">Select Status</option>
+<option value="Completed">Completed</option>
+<option value="Ongoing">Ongoing</option>
+<option value="Delayed">Delayed</option>
+</select>
+<input id="newProjectProgress" max="100" min="0" placeholder="Progress (%)" type="number"/>
+</div>
+<div class="popup-actions">
+<button class="cancel-btn" onclick="closeAddProject()">
+                    Cancel
+                </button>
+<button class="save-project-btn" onclick="addProject()">
+                    Add Project
+                </button>
+</div>
+</div>
+</div>
+<script src="gov_ui.js"></script>
+</body>
+</html>

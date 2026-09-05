@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MPLADS AI - Reports</title>
+<link href="style.css" rel="stylesheet"/>
+<link href="report_style.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<script>
+        if (sessionStorage.getItem("mpladsLoggedIn") !== "true") {
+            window.location.replace("login.html");
+        }
+    </script>
+<link href="sidebar.css" rel="stylesheet"/></head>
+<body class="reports-page">
+<div class="app">
+<aside class="sidebar unified-sidebar" id="reportsSidebar"><div class="logo unified-logo"><div class="logo-box">AI</div><div><h2>MPLADS</h2><p>AI MONITOR</p></div></div><nav class="unified-nav" id="mainNav"><a class="unified-nav-item" href="home.html"><i aria-hidden="true" class="fa-solid fa-house nav-icon"></i><span>Home</span></a><a class="unified-nav-item" href="index.html"><i aria-hidden="true" class="fa-solid fa-table-columns nav-icon"></i><span>Dashboard</span></a><a class="unified-nav-item" href="projects.html"><i aria-hidden="true" class="fa-regular fa-folder nav-icon"></i><span>Projects</span></a><a class="unified-nav-item" href="alerts.html"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation nav-icon"></i><span>Risk Alerts</span></a><a class="unified-nav-item" href="analytics.html"><i aria-hidden="true" class="fa-solid fa-chart-column nav-icon"></i><span>Analytics</span></a><a class="unified-nav-item" href="map.html"><i aria-hidden="true" class="fa-regular fa-map nav-icon"></i><span>Map View</span></a><a aria-current="page" class="unified-nav-item active" href="reports.html"><i aria-hidden="true" class="fa-regular fa-file-lines nav-icon"></i><span>Reports</span></a><a class="unified-nav-item" href="settings.html"><i aria-hidden="true" class="fa-solid fa-gear nav-icon"></i><span>Settings</span></a></nav><div class="user-box unified-user-box"><div aria-hidden="true" class="officer-avatar">NO</div><div class="officer-meta"><b>Nodal Officer</b><p>Rajasthan</p><span><i aria-hidden="true" class="online-dot"></i>Online</span></div></div></aside>
+<main class="main reports-main" id="reportsMain">
+<button aria-label="Toggle sidebar" class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" type="button">
+<i class="fa-solid fa-bars" aria-hidden="true"></i>
+</button>
+<header class="reports-header">
+<div>
+<h1>Reports &amp; Export</h1>
+<p>Generate and download MPLADS monitoring reports</p>
+</div>
+<button class="generate-btn" onclick="openGenerateModal()" type="button">
+<i class="fa-solid fa-plus"></i>
+                    Generate New Report
+                </button>
+</header>
+<section class="report-stat-grid">
+<article class="report-stat-card">
+<div class="stat-icon stat-blue"><i class="fa-regular fa-file-lines"></i></div>
+<div><span>Total Reports</span><strong id="statTotalReports">—</strong><small>Generated Reports</small></div>
+</article>
+<article class="report-stat-card">
+<div class="stat-icon stat-green"><i class="fa-regular fa-calendar-check"></i></div>
+<div><span>This Month</span><strong id="statThisMonth">—</strong><small>Reports Generated</small></div>
+</article>
+<article class="report-stat-card">
+<div class="stat-icon stat-purple"><i class="fa-solid fa-download"></i></div>
+<div><span>Downloads</span><strong id="statDownloads">—</strong><small>Total Downloads</small></div>
+</article>
+<article class="report-stat-card">
+<div class="stat-icon stat-orange"><i class="fa-regular fa-clock"></i></div>
+<div><span>Last Report</span><strong id="statLastReport">—</strong><small id="statLastReportName">Latest generated report</small></div>
+</article>
+<article class="report-stat-card">
+<div class="stat-icon stat-red"><i class="fa-regular fa-clipboard"></i></div>
+<div><span>Scheduled</span><strong id="statScheduled">—</strong><small>Auto Reports</small></div>
+</article>
+</section>
+<section class="report-filter-panel">
+<label>
+<span>Report Type</span>
+<select id="reportType">
+<option value="">All Reports</option>
+<option value="Summary">Summary</option>
+<option value="Risk">Risk Analysis</option>
+<option value="Financial">Financial</option>
+<option value="Progress">Progress</option>
+<option value="Status">Status</option>
+</select>
+</label>
+<label>
+<span>District</span>
+<select id="districtFilter">
+<option value="">All Districts</option>
+<option value="Rajasthan">Rajasthan</option>
+<option value="Jaipur">Jaipur</option>
+<option value="Kota">Kota</option>
+<option value="Ajmer">Ajmer</option>
+<option value="Jodhpur">Jodhpur</option>
+<option value="Udaipur">Udaipur</option>
+</select>
+</label>
+<label>
+<span>Date From</span>
+<input id="fromDate" type="date"/>
+</label>
+<label>
+<span>Date To</span>
+<input id="toDate" type="date"/>
+</label>
+<button class="filter-btn" onclick="applyReportFilters()" type="button">
+<i class="fa-solid fa-filter"></i> Filter
+                </button>
+<button class="reset-btn" onclick="resetReportFilters()" type="button">
+<i class="fa-solid fa-rotate-right"></i> Reset
+                </button>
+</section>
+<section class="reports-content-grid">
+<div class="report-panel reports-table-panel">
+<div class="panel-title-row">
+<h2>Recent Reports</h2>
+<span class="result-count" id="reportResultCount"></span>
+</div>
+<div class="report-table-wrap">
+<table class="reports-table">
+<thead>
+<tr>
+<th>Report Name</th>
+<th>Type</th>
+<th>District</th>
+<th>Generated On</th>
+<th>Size</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="reportsTableBody">
+<tr><td class="table-message" colspan="6">Loading reports…</td></tr>
+</tbody>
+</table>
+</div>
+<div class="table-footer">
+<button class="view-all-btn" id="viewAllBtn" onclick="toggleViewAll()" type="button">View All Reports</button>
+</div>
+</div>
+<aside class="report-panel preview-panel">
+<div class="preview-title-row">
+<h2>Report Preview</h2>
+<select aria-label="Choose report to preview" id="previewReportSelect"></select>
+</div>
+<div class="preview-divider"></div>
+<h3>Executive Summary</h3>
+<div class="preview-summary-grid">
+<div class="preview-metric"><span>Total Projects</span><strong id="previewTotalProjects">—</strong></div>
+<div class="preview-metric"><span>Total Sanctioned</span><strong id="previewSanctioned">—</strong></div>
+<div class="preview-metric"><span>Total Spent</span><strong id="previewSpent">—</strong></div>
+<div class="preview-metric"><span class="green-text">Avg Progress</span><strong id="previewProgress">—</strong></div>
+</div>
+<div class="preview-visual-grid">
+<div class="preview-box risk-box">
+<h3>Risk Distribution</h3>
+<div class="risk-visual-wrap">
+<div class="risk-donut" id="riskDonut"><div class="risk-donut-center"><span id="riskDonutTotal">0</span></div></div>
+<div class="risk-legend">
+<div><span><i class="legend-dot high-dot"></i>High Risk (<b id="riskHighCount">0</b>)</span><strong id="riskHighPct">0%</strong></div>
+<div><span><i class="legend-dot medium-dot"></i>Medium Risk (<b id="riskMediumCount">0</b>)</span><strong id="riskMediumPct">0%</strong></div>
+<div><span><i class="legend-dot low-dot"></i>Low Risk (<b id="riskLowCount">0</b>)</span><strong id="riskLowPct">0%</strong></div>
+</div>
+</div>
+</div>
+<div class="preview-box progress-box">
+<h3>Project Progress</h3>
+<div class="progress-ring" id="progressRing"><div><strong id="progressRingValue">0%</strong></div></div>
+<p>Average Progress</p>
+</div>
+</div>
+<div class="preview-box utilization-box">
+<h3>Fund Utilization</h3>
+<div class="utilization-values">
+<span id="utilizationAmounts">—</span>
+<strong id="utilizationPct">0%</strong>
+</div>
+<div class="utilization-track"><div id="utilizationBar"></div></div>
+</div>
+<button class="download-sample-btn" onclick="downloadSelectedReport()" type="button">
+<i class="fa-solid fa-download"></i>
+                        Download Selected Report
+                    </button>
+</aside>
+</section>
+</main>
+</div>
+<div aria-hidden="true" class="report-modal" id="generateModal">
+<div aria-labelledby="generateModalTitle" aria-modal="true" class="report-modal-card" role="dialog">
+<div class="modal-header">
+<div>
+<h2 id="generateModalTitle">Generate New Report</h2>
+<p>Create a report from the latest MPLADS project data.</p>
+</div>
+<button aria-label="Close" class="modal-close" onclick="closeGenerateModal()" type="button">×</button>
+</div>
+<div class="modal-form-grid">
+<label>
+<span>Report Type</span>
+<select id="newReportType">
+<option value="Summary">District Summary</option>
+<option value="Risk">Risk Analysis</option>
+<option value="Financial">Fund Utilization</option>
+<option value="Progress">Monthly Progress</option>
+<option value="Status">Project Status</option>
+</select>
+</label>
+<label>
+<span>District</span>
+<select id="newReportDistrict">
+<option value="Rajasthan">Rajasthan (All Projects)</option>
+<option value="Jaipur">Jaipur</option>
+<option value="Kota">Kota</option>
+<option value="Ajmer">Ajmer</option>
+<option value="Jodhpur">Jodhpur</option>
+<option value="Udaipur">Udaipur</option>
+</select>
+</label>
+<label class="modal-full-field">
+<span>Report Name <small>(optional)</small></span>
+<input id="newReportName" maxlength="80" placeholder="Leave blank to use the default name" type="text"/>
+</label>
+</div>
+<div class="modal-actions">
+<button class="reset-btn" onclick="closeGenerateModal()" type="button">Cancel</button>
+<button class="filter-btn" id="confirmGenerateBtn" onclick="generateNewReport()" type="button">
+<i class="fa-solid fa-wand-magic-sparkles"></i> Generate Report
+                </button>
+</div>
+</div>
+</div>
+<div aria-live="polite" class="report-toast" id="reportToast" role="status"></div>
+<script>
+    const state = {
+        reports: [],
+        filteredReports: [],
+        selectedReportId: null,
+        showAll: false
+    };
+
+    // Robust API connection: works when opened through Flask or VS Code Live Server.
+    // It first tries the current origin, then automatically falls back to Flask on port 5000.
+    function apiCandidates(path) {
+        if (/^https?:\/\//i.test(path)) return [path];
+
+        const candidates = [];
+        if (window.location.protocol === 'http:' || window.location.protocol === 'https:') {
+            candidates.push(`${window.location.origin}${path}`);
+        }
+
+        const flaskHosts = ['127.0.0.1', 'localhost'];
+        flaskHosts.forEach(host => {
+            const url = `http://${host}:5000${path}`;
+            if (!candidates.includes(url)) candidates.push(url);
+        });
+
+        return candidates;
+    }
+
+    async function fetchApi(path, options = {}) {
+        const candidates = apiCandidates(path);
+        let lastError = null;
+
+        for (const url of candidates) {
+            try {
+                const response = await fetch(url, options);
+                if (response.ok) return response;
+
+                // A Live Server 404 means the API is not on that port; try Flask next.
+                lastError = new Error(`API request failed (${response.status}) at ${url}`);
+            } catch (error) {
+                lastError = error;
+            }
+        }
+
+        throw new Error(
+            `Could not connect to the Flask backend. Keep "python3 app.py" running on port 5000. ${lastError ? lastError.message : ''}`.trim()
+        );
+    }
+
+    function toggleSidebar() {
+        document.querySelector('.app').classList.toggle('sidebar-hidden');
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('reportToast');
+        toast.textContent = message;
+        toast.className = `report-toast show ${type}`;
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#039;');
+    }
+
+    function formatDateTime(value) {
+        if (!value) return '—';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        const dateText = date.toLocaleDateString('en-GB', {day: '2-digit', month: 'short', year: 'numeric'});
+        const timeText = date.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
+        return `${dateText}<br><small>${timeText}</small>`;
+    }
+
+    function moneyLabel(lakh) {
+        const value = Number(lakh || 0);
+        if (Math.abs(value) >= 100) return `₹${(value / 100).toFixed(2)} Cr`;
+        return `₹${value.toFixed(1).replace(/\.0$/, '')} L`;
+    }
+
+    function typeClass(type) {
+        return {
+            Summary: 'summary',
+            Risk: 'risk',
+            Financial: 'financial',
+            Progress: 'progress',
+            Status: 'status'
+        }[type] || 'summary';
+    }
+
+    function typeLabel(type) {
+        return type === 'Risk' ? 'Risk' : type;
+    }
+
+    async function api(url, options = {}) {
+        const response = await fetchApi(url, options);
+        const contentType = response.headers.get('content-type') || '';
+        return contentType.includes('application/json') ? response.json() : response;
+    }
+
+    async function loadPage() {
+        try {
+            await Promise.all([loadStats(), loadReports()]);
+        } catch (error) {
+            console.error(error);
+            showToast(error.message, 'error');
+        }
+    }
+
+    async function loadStats() {
+        const stats = await api('/api/reports/stats');
+        document.getElementById('statTotalReports').textContent = stats.total_reports;
+        document.getElementById('statThisMonth').textContent = stats.this_month;
+        document.getElementById('statDownloads').textContent = stats.downloads;
+        document.getElementById('statLastReport').textContent = stats.last_report_text;
+        document.getElementById('statLastReportName').textContent = stats.last_report_name || 'No report generated';
+        document.getElementById('statScheduled').textContent = stats.scheduled;
+    }
+
+    async function loadReports() {
+        const params = new URLSearchParams();
+        const type = document.getElementById('reportType').value;
+        const district = document.getElementById('districtFilter').value;
+        const from = document.getElementById('fromDate').value;
+        const to = document.getElementById('toDate').value;
+        if (type) params.set('type', type);
+        if (district) params.set('district', district);
+        if (from) params.set('from', from);
+        if (to) params.set('to', to);
+
+        const reports = await api(`/api/reports${params.toString() ? '?' + params.toString() : ''}`);
+        state.filteredReports = reports;
+        if (!type && !district && !from && !to) state.reports = reports;
+
+        if (!state.selectedReportId || !reports.some(r => r.id === state.selectedReportId)) {
+            state.selectedReportId = reports[0]?.id || null;
+        }
+        renderReports();
+        renderPreviewSelect();
+        if (state.selectedReportId) await loadPreview(state.selectedReportId);
+        else clearPreview();
+    }
+
+    function renderReports() {
+        const tbody = document.getElementById('reportsTableBody');
+        const reports = state.showAll ? state.filteredReports : state.filteredReports.slice(0, 7);
+        document.getElementById('reportResultCount').textContent = `${state.filteredReports.length} report${state.filteredReports.length === 1 ? '' : 's'}`;
+
+        if (!reports.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="table-message">No reports match the selected filters.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = reports.map(report => `
+            <tr data-report-id="${escapeHtml(report.id)}">
+                <td><div class="report-name-cell"><i class="fa-regular fa-file-lines"></i><span>${escapeHtml(report.name)}</span></div></td>
+                <td><span class="report-tag ${typeClass(report.type)}">${escapeHtml(typeLabel(report.type))}</span></td>
+                <td>${escapeHtml(report.district)}</td>
+                <td>${formatDateTime(report.generated_at)}</td>
+                <td>${escapeHtml(report.size)}</td>
+                <td>
+                    <div class="report-actions">
+                        <button class="action-btn download-action" title="Download" aria-label="Download ${escapeHtml(report.name)}" onclick="downloadReport('${escapeHtml(report.id)}')"><i class="fa-solid fa-download"></i></button>
+                        <button class="action-btn view-action" title="Preview" aria-label="Preview ${escapeHtml(report.name)}" onclick="viewReport('${escapeHtml(report.id)}')"><i class="fa-regular fa-eye"></i></button>
+                        <button class="action-btn delete-action" title="Delete" aria-label="Delete ${escapeHtml(report.name)}" onclick="deleteReport('${escapeHtml(report.id)}', '${escapeHtml(report.name)}')"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+        document.getElementById('viewAllBtn').textContent = state.showAll ? 'Show Recent Reports' : 'View All Reports';
+    }
+
+    function renderPreviewSelect() {
+        const select = document.getElementById('previewReportSelect');
+        const source = state.filteredReports.length ? state.filteredReports : state.reports;
+        select.innerHTML = source.map(report => `<option value="${escapeHtml(report.id)}">${escapeHtml(report.name)}</option>`).join('');
+        if (state.selectedReportId) select.value = state.selectedReportId;
+        select.onchange = () => viewReport(select.value);
+    }
+
+    async function loadPreview(reportId) {
+        const report = await api(`/api/reports/${encodeURIComponent(reportId)}`);
+        state.selectedReportId = report.id;
+        document.getElementById('previewReportSelect').value = report.id;
+        const summary = report.summary;
+        const total = summary.total_projects || 0;
+        const highPct = total ? (summary.high_risk / total * 100) : 0;
+        const mediumPct = total ? (summary.medium_risk / total * 100) : 0;
+        const lowPct = Math.max(0, 100 - highPct - mediumPct);
+
+        document.getElementById('previewTotalProjects').textContent = total;
+        document.getElementById('previewSanctioned').textContent = moneyLabel(summary.total_sanctioned);
+        document.getElementById('previewSpent').textContent = moneyLabel(summary.total_spent);
+        document.getElementById('previewProgress').textContent = `${summary.avg_progress.toFixed(1)}%`;
+        document.getElementById('riskDonutTotal').textContent = total;
+        document.getElementById('riskHighCount').textContent = summary.high_risk;
+        document.getElementById('riskMediumCount').textContent = summary.medium_risk;
+        document.getElementById('riskLowCount').textContent = summary.low_risk;
+        document.getElementById('riskHighPct').textContent = `${highPct.toFixed(1)}%`;
+        document.getElementById('riskMediumPct').textContent = `${mediumPct.toFixed(1)}%`;
+        document.getElementById('riskLowPct').textContent = `${lowPct.toFixed(1)}%`;
+        document.getElementById('riskDonut').style.background = `conic-gradient(#ef4444 0 ${highPct}%, #f59e0b ${highPct}% ${highPct + mediumPct}%, #16a34a ${highPct + mediumPct}% 100%)`;
+        document.getElementById('progressRingValue').textContent = `${summary.avg_progress.toFixed(0)}%`;
+        document.getElementById('progressRing').style.background = `conic-gradient(#16a34a 0 ${summary.avg_progress}%, #eef2f7 ${summary.avg_progress}% 100%)`;
+        document.getElementById('utilizationAmounts').textContent = `${moneyLabel(summary.total_spent)} / ${moneyLabel(summary.total_sanctioned)}`;
+        document.getElementById('utilizationPct').textContent = `${summary.utilization.toFixed(1)}%`;
+        document.getElementById('utilizationBar').style.width = `${Math.min(summary.utilization, 100)}%`;
+    }
+
+    function clearPreview() {
+        ['previewTotalProjects','previewSanctioned','previewSpent','previewProgress'].forEach(id => document.getElementById(id).textContent = '—');
+        document.getElementById('previewReportSelect').innerHTML = '<option>No reports</option>';
+    }
+
+    async function applyReportFilters() {
+        const from = document.getElementById('fromDate').value;
+        const to = document.getElementById('toDate').value;
+        if (from && to && from > to) {
+            showToast('Date From cannot be after Date To.', 'error');
+            return;
+        }
+        state.showAll = false;
+        try {
+            await loadReports();
+            showToast('Filters applied.');
+        } catch (error) {
+            showToast(error.message, 'error');
+        }
+    }
+
+    async function resetReportFilters() {
+        document.getElementById('reportType').value = '';
+        document.getElementById('districtFilter').value = '';
+        document.getElementById('fromDate').value = '';
+        document.getElementById('toDate').value = '';
+        state.showAll = false;
+        try {
+            await loadReports();
+            showToast('Filters reset.');
+        } catch (error) {
+            showToast(error.message, 'error');
+        }
+    }
+
+    function toggleViewAll() {
+        state.showAll = !state.showAll;
+        renderReports();
+    }
+
+    function viewReport(reportId) {
+        loadPreview(reportId).then(() => {
+            document.querySelector('.preview-panel').scrollIntoView({behavior: 'smooth', block: 'nearest'});
+        }).catch(error => showToast(error.message, 'error'));
+    }
+
+    async function downloadReport(reportId) {
+        try {
+            const response = await fetchApi(`/api/reports/${encodeURIComponent(reportId)}/download`);
+            if (!response.ok) throw new Error('Could not download report.');
+            const blob = await response.blob();
+            const disposition = response.headers.get('content-disposition') || '';
+            const match = disposition.match(/filename="?([^";]+)"?/i);
+            const filename = match ? match[1] : `mplads-report-${reportId}.csv`;
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+            await loadStats();
+            showToast('Report downloaded.');
+        } catch (error) {
+            showToast(error.message, 'error');
+        }
+    }
+
+    function downloadSelectedReport() {
+        if (!state.selectedReportId) {
+            showToast('Select a report first.', 'error');
+            return;
+        }
+        downloadReport(state.selectedReportId);
+    }
+
+    async function deleteReport(reportId, reportName) {
+        if (!confirm(`Delete “${reportName}”?\n\nThis removes it from the report list.`)) return;
+        try {
+            await api(`/api/reports/${encodeURIComponent(reportId)}`, {method: 'DELETE'});
+            state.selectedReportId = null;
+            await Promise.all([loadStats(), loadReports()]);
+            showToast('Report deleted.');
+        } catch (error) {
+            showToast(error.message, 'error');
+        }
+    }
+
+    function openGenerateModal() {
+        const modal = document.getElementById('generateModal');
+        modal.classList.add('show');
+        modal.setAttribute('aria-hidden', 'false');
+        setTimeout(() => document.getElementById('newReportType').focus(), 50);
+    }
+
+    function closeGenerateModal() {
+        const modal = document.getElementById('generateModal');
+        modal.classList.remove('show');
+        modal.setAttribute('aria-hidden', 'true');
+        document.getElementById('newReportName').value = '';
+    }
+
+    async function generateNewReport() {
+        const button = document.getElementById('confirmGenerateBtn');
+        const payload = {
+            type: document.getElementById('newReportType').value,
+            district: document.getElementById('newReportDistrict').value,
+            name: document.getElementById('newReportName').value.trim()
+        };
+        button.disabled = true;
+        button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating…';
+        try {
+            const result = await api('/api/reports/generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            closeGenerateModal();
+            document.getElementById('reportType').value = '';
+            document.getElementById('districtFilter').value = '';
+            document.getElementById('fromDate').value = '';
+            document.getElementById('toDate').value = '';
+            state.selectedReportId = result.report.id;
+            state.showAll = false;
+            await Promise.all([loadStats(), loadReports()]);
+            showToast('New report generated successfully.');
+        } catch (error) {
+            showToast(error.message, 'error');
+        } finally {
+            button.disabled = false;
+            button.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate Report';
+        }
+    }
+
+    document.getElementById('generateModal').addEventListener('click', event => {
+        if (event.target.id === 'generateModal') closeGenerateModal();
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') closeGenerateModal();
+    });
+
+    loadPage();
+</script>
+</body>
+</html>

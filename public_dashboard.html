@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MPLADS Public Dashboard</title>
+  <link rel="stylesheet" href="public_dashboard.css">
+  <script>
+    // A logged-in officer should see the existing detailed dashboard.
+    if (sessionStorage.getItem('mpladsLoggedIn') === 'true') {
+      window.location.replace('/dashboard');
+    }
+  </script>
+</head>
+<body>
+  <div class="utility-bar">
+    <div class="page-width utility-inner">
+      <span>Academic Prototype · MPLADS Public Information</span>
+      <div class="utility-actions">
+        <button type="button" data-font="down">A-</button>
+        <button type="button" data-font="reset">A</button>
+        <button type="button" data-font="up">A+</button>
+      </div>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="page-width header-inner">
+      <div class="brand">
+        <div class="brand-badge">AI</div>
+        <div>
+          <h1>MPLADS AI Monitor</h1>
+          <p>Public Works Dashboard</p>
+        </div>
+      </div>
+      <button class="login-button" id="loginButton" type="button">Officer Login</button>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <div class="page-width nav-inner">
+      <a class="active" href="#dashboard">Dashboard</a>
+      <a href="#works">Public Works</a>
+    </div>
+  </nav>
+
+  <main class="page-width" id="dashboard">
+    <div class="breadcrumb">Home <span>›</span> Dashboard</div>
+
+    <section class="page-heading">
+      <div>
+        <h2>MPLADS Public Dashboard</h2>
+        <p>Search public project status, constituency, district and sanctioned amount.</p>
+      </div>
+      <div class="updated">Last updated: <strong id="lastUpdated">—</strong></div>
+    </section>
+
+    <section class="summary-grid" aria-label="Public project summary">
+      <article class="summary-card">
+        <span>Total Works</span>
+        <strong id="totalWorks">0</strong>
+      </article>
+      <article class="summary-card">
+        <span>Ongoing Works</span>
+        <strong id="ongoingWorks">0</strong>
+      </article>
+      <article class="summary-card">
+        <span>Completed Works</span>
+        <strong id="completedWorks">0</strong>
+      </article>
+      <article class="summary-card">
+        <span>Sanctioned Amount</span>
+        <strong id="sanctionedAmount">₹0.00 Lakh</strong>
+      </article>
+      <article class="summary-card">
+        <span>Expenditure</span>
+        <strong id="spentAmount">₹0.00 Lakh</strong>
+      </article>
+    </section>
+
+    <section class="filter-box" aria-labelledby="filterTitle">
+      <div class="filter-title-row">
+        <div>
+          <h3 id="filterTitle">Search MPLADS Works</h3>
+          <p>Use the filters to find which projects are running in a constituency or district.</p>
+        </div>
+      </div>
+
+      <form id="filterForm" class="filters">
+        <div class="field">
+          <label for="stateFilter">State</label>
+          <select id="stateFilter">
+            <option value="">All States</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="districtFilter">District</label>
+          <select id="districtFilter">
+            <option value="">All Districts</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="constituencyFilter">Constituency</label>
+          <select id="constituencyFilter">
+            <option value="">All Constituencies</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="statusFilter">Work Status</label>
+          <select id="statusFilter">
+            <option value="">All Statuses</option>
+            <option value="Ongoing">Ongoing</option>
+            <option value="Completed">Completed</option>
+            <option value="Delayed">Delayed</option>
+          </select>
+        </div>
+        <div class="field project-field">
+          <label for="projectSearch">Project / Project ID</label>
+          <input id="projectSearch" type="search" placeholder="e.g. road, water, MPL-1001">
+        </div>
+        <div class="filter-buttons">
+          <button type="button" class="button secondary" id="resetButton">Reset</button>
+          <button type="submit" class="button primary">Search</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="works-section" id="works">
+      <div class="table-heading">
+        <div>
+          <h3>MPLADS Works</h3>
+          <p id="resultText">Showing 0 works</p>
+        </div>
+        <div class="quick-search">
+          <label for="quickSearch">Search:</label>
+          <input id="quickSearch" type="search" placeholder="project / constituency">
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Sr. No.</th>
+              <th>Project ID</th>
+              <th>State</th>
+              <th>District</th>
+              <th>Constituency</th>
+              <th>Project / Work</th>
+              <th>Sanctioned Amount</th>
+              <th>Progress</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="worksBody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="emptyMessage" hidden>No projects match the selected filters.</div>
+    </section>
+
+    <p class="prototype-note">
+      Public view is read-only. AI risk scores, alerts, investigation tools, analytics, reports and settings remain inside the officer login.
+    </p>
+  </main>
+
+  <footer>
+    <div class="page-width footer-inner">
+      <span>MPLADS AI Monitor · SIH Academic Prototype</span>
+      <span>Not an official Government of India website</span>
+    </div>
+  </footer>
+
+  <script src="public_dashboard.js"></script>
+</body>
+</html>

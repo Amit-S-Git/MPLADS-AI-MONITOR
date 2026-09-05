@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MPLADS Analytics</title>
+<script>
+        if (sessionStorage.getItem("mpladsLoggedIn") !== "true") {
+            window.location.replace("login.html?next=analytics.html");
+        }
+    </script>
+<link href="style.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/><link href="sidebar.css" rel="stylesheet"/><link rel="stylesheet" href="gov_theme.css">
+</head>
+<body>
+<div class="app">
+<!-- SIDEBAR -->
+<aside class="sidebar unified-sidebar"><div class="logo unified-logo"><div class="logo-box">AI</div><div><h2>MPLADS</h2><p>AI MONITOR</p></div></div><nav class="unified-nav" id="mainNav"><a class="unified-nav-item" href="home.html"><i aria-hidden="true" class="fa-solid fa-house nav-icon"></i><span>Home</span></a><a class="unified-nav-item" href="index.html"><i aria-hidden="true" class="fa-solid fa-table-columns nav-icon"></i><span>Dashboard</span></a><a class="unified-nav-item" href="projects.html"><i aria-hidden="true" class="fa-regular fa-folder nav-icon"></i><span>Projects</span></a><a class="unified-nav-item" href="alerts.html"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation nav-icon"></i><span>Risk Alerts</span></a><a aria-current="page" class="unified-nav-item active" href="analytics.html"><i aria-hidden="true" class="fa-solid fa-chart-column nav-icon"></i><span>Analytics</span></a><a class="unified-nav-item" href="map.html"><i aria-hidden="true" class="fa-regular fa-map nav-icon"></i><span>Map View</span></a><a class="unified-nav-item" href="reports.html"><i aria-hidden="true" class="fa-regular fa-file-lines nav-icon"></i><span>Reports</span></a><a class="unified-nav-item" href="settings.html"><i aria-hidden="true" class="fa-solid fa-gear nav-icon"></i><span>Settings</span></a></nav><div class="user-box unified-user-box"><div aria-hidden="true" class="officer-avatar">NO</div><div class="officer-meta"><b>Nodal Officer</b><p>Rajasthan</p><span><i aria-hidden="true" class="online-dot"></i>Online</span></div></div></aside>
+<!-- MAIN CONTENT -->
+<main class="main-content">
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" type="button">
+<i class="fa-solid fa-bars" aria-hidden="true"></i>
+</button>
+<div class="page-header">
+<div>
+<h1>
+                        📈 Project Analytics
+                    </h1>
+<p>
+                        Analyze MPLADS project performance,
+                        fund utilization and risk patterns
+                    </p>
+</div>
+<button onclick="refreshAnalytics()">
+
+                    🔄 Refresh
+
+                </button>
+</div>
+<!-- STAT CARDS -->
+<section class="analytics-cards">
+<div class="analytics-card">
+<span>
+                        Total Projects
+                    </span>
+<strong id="totalProjects">
+                        -
+                    </strong>
+</div>
+<div class="analytics-card">
+<span>
+                        🔴 High Risk
+                    </span>
+<strong id="highRisk">
+                        -
+                    </strong>
+</div>
+<div class="analytics-card">
+<span>
+                        🟠 Medium Risk
+                    </span>
+<strong id="mediumRisk">
+                        -
+                    </strong>
+</div>
+<div class="analytics-card">
+<span>
+                        ⚠️ Delayed
+                    </span>
+<strong id="delayedProjects">
+                        -
+                    </strong>
+</div>
+</section>
+<!-- FUND SUMMARY -->
+<section class="analytics-panel">
+<h2>
+                    💰 Fund Utilization
+                </h2>
+<div class="fund-summary">
+<div>
+<span>
+                            Total Sanctioned
+                        </span>
+<strong id="totalSanctioned">
+                            ₹0 L
+                        </strong>
+</div>
+<div>
+<span>
+                            Total Spent
+                        </span>
+<strong id="totalSpent">
+                            ₹0 L
+                        </strong>
+</div>
+<div>
+<span>
+                            Utilization
+                        </span>
+<strong id="utilization">
+                            0%
+                        </strong>
+</div>
+</div>
+</section>
+<!-- DISTRICT ANALYSIS -->
+<section class="analytics-panel">
+<h2>
+                    🏙️ District-wise Fund Utilization
+                </h2>
+<div id="districtAnalytics">
+
+                    Loading district data...
+
+                </div>
+</section>
+<!-- RISK SUMMARY -->
+<section class="analytics-panel">
+<h2>
+                    🚨 Risk Overview
+                </h2>
+<div id="riskOverview">
+
+                    Loading risk analysis...
+
+                </div>
+</section>
+<!-- TOP RISK PROJECTS -->
+<section class="analytics-panel">
+<h2>
+                    🔴 Highest Risk Projects
+                </h2>
+<div id="topRiskProjects">
+
+                    Loading projects...
+
+                </div>
+</section>
+</main>
+</div>
+<script>
+
+        const API_BASE = window.location.origin;
+
+        function formatLakh(value) {
+            return "₹" + Number(value || 0).toFixed(1) + " L";
+        }
+
+
+        function escapeHTML(value) {
+            const div = document.createElement("div");
+            div.textContent = value ?? "";
+            return div.innerHTML;
+        }
+
+
+        async function fetchJSON(url) {
+
+            const response = await fetch(url, { cache: "no-store" });
+
+            if (!response.ok) {
+                throw new Error(
+                    `${url} returned ${response.status}`
+                );
+            }
+
+            return response.json();
+        }
+
+
+        function calculateRiskLocal(project) {
+            let risk = 0;
+            const reasons = [];
+            const sanctioned = Number(project.sanctioned || 0);
+            const spent = Number(project.spent || 0);
+            const progress = Number(project.progress || 0);
+
+            if (sanctioned > 0 && spent > sanctioned) {
+                const overrun = ((spent - sanctioned) / sanctioned) * 100;
+                if (overrun > 20) {
+                    risk += 50;
+                    reasons.push("Significant cost overrun detected");
+                } else {
+                    risk += 25;
+                    reasons.push("Cost exceeds sanctioned amount");
+                }
+            }
+
+            if (progress < 50) {
+                risk += 35;
+                reasons.push("Project progress is critically low");
+            } else if (progress < 70) {
+                risk += 20;
+                reasons.push("Project progress is below expected level");
+            }
+
+            const utilization = sanctioned > 0 ? (spent / sanctioned) * 100 : 0;
+            if (utilization < 65 && progress > 60) {
+                risk += 20;
+                reasons.push("Low fund utilization compared with project progress");
+            }
+
+            risk = Math.min(risk, 100);
+            const level = risk >= 70 ? "High" : risk >= 40 ? "Medium" : "Low";
+            return { score: risk, level, reasons };
+        }
+
+
+        function normalizeProject(project) {
+            const item = { ...project };
+            if (item.risk_score === undefined || item.risk_level === undefined) {
+                const analysis = calculateRiskLocal(item);
+                item.risk_score = analysis.score;
+                item.risk_level = analysis.level;
+                item.risk_reasons = analysis.reasons;
+            } else {
+                item.risk_reasons = item.risk_reasons || item.reasons || [];
+            }
+            return item;
+        }
+
+
+        async function loadProjectsResilient() {
+            try {
+                const data = await fetchJSON(`${API_BASE}/api/projects`);
+                if (!Array.isArray(data)) throw new Error("Projects API returned invalid data");
+                return data.map(normalizeProject);
+            } catch (apiError) {
+                console.warn("Projects API unavailable; using projects_data.json fallback.", apiError);
+                const data = await fetchJSON(`${API_BASE}/projects_data.json`);
+                if (!Array.isArray(data)) throw new Error("projects_data.json returned invalid data");
+                return data.map(normalizeProject);
+            }
+        }
+
+
+        function buildDashboardFromProjects(projects) {
+            const total = projects.length;
+            const completed = projects.filter(p => Number(p.progress) >= 90).length;
+            const delayed = projects.filter(p => Number(p.progress) < 70).length;
+            const ongoing = Math.max(0, total - completed - delayed);
+            const highRisk = projects.filter(p => p.risk_level === "High").length;
+            const mediumRisk = projects.filter(p => p.risk_level === "Medium").length;
+            const lowRisk = projects.filter(p => p.risk_level === "Low").length;
+            const districtFunds = {};
+
+            projects.forEach(project => {
+                const district = project.district || "Unknown";
+                if (!districtFunds[district]) districtFunds[district] = { sanctioned: 0, spent: 0 };
+                districtFunds[district].sanctioned += Number(project.sanctioned || 0);
+                districtFunds[district].spent += Number(project.spent || 0);
+            });
+
+            return {
+                total_projects: total,
+                completed,
+                ongoing,
+                delayed,
+                high_risk: highRisk,
+                medium_risk: mediumRisk,
+                low_risk: lowRisk,
+                total_sanctioned: projects.reduce((sum, p) => sum + Number(p.sanctioned || 0), 0),
+                total_spent: projects.reduce((sum, p) => sum + Number(p.spent || 0), 0),
+                district_funds: districtFunds
+            };
+        }
+
+
+        async function loadDashboardResilient(projects) {
+            try {
+                return await fetchJSON(`${API_BASE}/api/dashboard`);
+            } catch (apiError) {
+                console.warn("Dashboard API unavailable; calculating analytics from project data.", apiError);
+                return buildDashboardFromProjects(projects);
+            }
+        }
+
+
+        async function loadAnalytics() {
+
+            const districtContainer =
+                document.getElementById("districtAnalytics");
+
+            const riskOverview =
+                document.getElementById("riskOverview");
+
+            const topRiskContainer =
+                document.getElementById("topRiskProjects");
+
+            try {
+
+                const projects = await loadProjectsResilient();
+                const dashboard = await loadDashboardResilient(projects);
+
+
+                /* =========================
+                   STATISTICS
+                   ========================= */
+
+                document.getElementById(
+                    "totalProjects"
+                ).innerText =
+                    dashboard.total_projects;
+
+                document.getElementById(
+                    "highRisk"
+                ).innerText =
+                    dashboard.high_risk;
+
+                document.getElementById(
+                    "mediumRisk"
+                ).innerText =
+                    dashboard.medium_risk;
+
+                document.getElementById(
+                    "delayedProjects"
+                ).innerText =
+                    dashboard.delayed;
+
+
+                /* =========================
+                   FUND SUMMARY
+                   ========================= */
+
+                const sanctioned =
+                    Number(dashboard.total_sanctioned || 0);
+
+                const spent =
+                    Number(dashboard.total_spent || 0);
+
+                const utilization =
+                    sanctioned > 0
+                        ? (spent / sanctioned) * 100
+                        : 0;
+
+                document.getElementById(
+                    "totalSanctioned"
+                ).innerText =
+                    formatLakh(sanctioned);
+
+                document.getElementById(
+                    "totalSpent"
+                ).innerText =
+                    formatLakh(spent);
+
+                document.getElementById(
+                    "utilization"
+                ).innerText =
+                    utilization.toFixed(1) + "%";
+
+
+                /* =========================
+                   DISTRICT ANALYSIS
+                   ========================= */
+
+                districtContainer.innerHTML = "";
+
+                const districtEntries =
+                    Object.entries(
+                        dashboard.district_funds || {}
+                    );
+
+                if (districtEntries.length === 0) {
+
+                    districtContainer.innerHTML =
+                        `<p style="color:#7b8494;font-size:12px;">
+                            No district data available.
+                        </p>`;
+
+                } else {
+
+                    districtEntries
+                        .sort(
+                            (a, b) =>
+                                Number(b[1].spent) -
+                                Number(a[1].spent)
+                        )
+                        .forEach(
+                            ([district, data]) => {
+
+                                const sanctionedAmount =
+                                    Number(
+                                        data.sanctioned || 0
+                                    );
+
+                                const spentAmount =
+                                    Number(
+                                        data.spent || 0
+                                    );
+
+                                const districtUtilization =
+                                    sanctionedAmount > 0
+                                        ? (
+                                            spentAmount /
+                                            sanctionedAmount
+                                        ) * 100
+                                        : 0;
+
+                                const row =
+                                    document.createElement(
+                                        "div"
+                                    );
+
+                                row.className =
+                                    "district-row";
+
+                                row.innerHTML = `
+                                    <div style="
+                                        flex:1;
+                                        min-width:0;
+                                    ">
+                                        <span>
+                                            ${escapeHTML(district)}
+                                        </span>
+
+                                        <div style="
+                                            margin-top:6px;
+                                            height:6px;
+                                            background:#e5e7eb;
+                                            border-radius:10px;
+                                            overflow:hidden;
+                                        ">
+                                            <div style="
+                                                width:${Math.min(
+                                    districtUtilization,
+                                    100
+                                )}%;
+                                                height:100%;
+                                                background:#2563eb;
+                                                border-radius:10px;
+                                            "></div>
+                                        </div>
+                                    </div>
+
+                                    <b>
+                                        ${formatLakh(spentAmount)}
+                                        <small style="
+                                            display:block;
+                                            color:#7b8494;
+                                            font-weight:normal;
+                                            margin-top:2px;
+                                        ">
+                                            ${districtUtilization.toFixed(1)}%
+                                            utilized
+                                        </small>
+                                    </b>
+                                `;
+
+                                districtContainer.appendChild(
+                                    row
+                                );
+
+                            }
+                        );
+
+                }
+
+
+                /* =========================
+                   RISK OVERVIEW
+                   ========================= */
+
+                const total =
+                    Number(dashboard.total_projects || 0);
+
+                const high =
+                    Number(dashboard.high_risk || 0);
+
+                const medium =
+                    Number(dashboard.medium_risk || 0);
+
+                const low =
+                    Number(dashboard.low_risk || 0);
+
+                function riskPercent(count) {
+                    return total > 0
+                        ? ((count / total) * 100).toFixed(1)
+                        : "0.0";
+                }
+
+                riskOverview.innerHTML = `
+
+                    <div style="
+                        display:grid;
+                        gap:12px;
+                    ">
+
+                        <div>
+                            <div style="
+                                display:flex;
+                                justify-content:space-between;
+                                font-size:12px;
+                            ">
+                                <span>🔴 High Risk</span>
+                                <b>${high}</b>
+                            </div>
+
+                            <div style="
+                                margin-top:5px;
+                                height:8px;
+                                background:#fee2e2;
+                                border-radius:10px;
+                                overflow:hidden;
+                            ">
+                                <div style="
+                                    width:${riskPercent(high)}%;
+                                    height:100%;
+                                    background:#ef4444;
+                                "></div>
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <div style="
+                                display:flex;
+                                justify-content:space-between;
+                                font-size:12px;
+                            ">
+                                <span>🟠 Medium Risk</span>
+                                <b>${medium}</b>
+                            </div>
+
+                            <div style="
+                                margin-top:5px;
+                                height:8px;
+                                background:#ffedd5;
+                                border-radius:10px;
+                                overflow:hidden;
+                            ">
+                                <div style="
+                                    width:${riskPercent(medium)}%;
+                                    height:100%;
+                                    background:#f59e0b;
+                                "></div>
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <div style="
+                                display:flex;
+                                justify-content:space-between;
+                                font-size:12px;
+                            ">
+                                <span>🟢 Low Risk</span>
+                                <b>${low}</b>
+                            </div>
+
+                            <div style="
+                                margin-top:5px;
+                                height:8px;
+                                background:#dcfce7;
+                                border-radius:10px;
+                                overflow:hidden;
+                            ">
+                                <div style="
+                                    width:${riskPercent(low)}%;
+                                    height:100%;
+                                    background:#22c55e;
+                                "></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                /* =========================
+                   HIGHEST RISK PROJECTS
+                   ========================= */
+
+                topRiskContainer.innerHTML = "";
+
+                const topRiskProjects =
+                    [...projects]
+                        .filter(
+                            project =>
+                                Number(project.risk_score) >= 40
+                        )
+                        .sort(
+                            (a, b) =>
+                                Number(b.risk_score) -
+                                Number(a.risk_score)
+                        )
+                        .slice(0, 5);
+
+
+                if (topRiskProjects.length === 0) {
+
+                    topRiskContainer.innerHTML =
+                        `<p style="color:#7b8494;font-size:12px;">
+                            No medium or high-risk projects found.
+                        </p>`;
+
+                } else {
+
+                    topRiskProjects.forEach(
+                        project => {
+
+                            const row =
+                                document.createElement(
+                                    "div"
+                                );
+
+                            row.className =
+                                "district-row";
+
+                            const risk =
+                                Number(
+                                    project.risk_score || 0
+                                );
+
+                            const riskColor =
+                                risk >= 70
+                                    ? "#dc2626"
+                                    : "#ea580c";
+
+                            row.innerHTML = `
+                                <div>
+                                    <span>
+                                        ${escapeHTML(project.id)}
+                                        •
+                                        ${escapeHTML(project.name)}
+                                    </span>
+
+                                    <small style="
+                                        display:block;
+                                        margin-top:3px;
+                                        color:#7b8494;
+                                    ">
+                                        ${escapeHTML(project.district)}
+                                        •
+                                        ${project.progress}% progress
+                                    </small>
+                                </div>
+
+                                <b style="
+                                    color:${riskColor};
+                                ">
+                                    ${risk}/100
+                                </b>
+                            `;
+
+                            topRiskContainer.appendChild(
+                                row
+                            );
+
+                        }
+                    );
+
+                }
+
+
+                console.log(
+                    "Analytics loaded successfully:",
+                    {
+                        dashboard,
+                        projects
+                    }
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Analytics loading error:",
+                    error
+                );
+
+                districtContainer.innerHTML =
+                    `<p style="color:#dc2626;font-size:12px;">
+                        Unable to load analytics. Check Flask server.
+                    </p>`;
+
+                riskOverview.innerHTML =
+                    `<p style="color:#dc2626;font-size:12px;">
+                        Risk data unavailable.
+                    </p>`;
+
+                topRiskContainer.innerHTML =
+                    `<p style="color:#dc2626;font-size:12px;">
+                        Project data unavailable.
+                    </p>`;
+
+            }
+
+        }
+
+
+        /* Refresh button */
+
+        function refreshAnalytics() {
+            loadAnalytics();
+        }
+
+
+        loadAnalytics();
+
+    </script>
+<script src="script.js"></script>
+<script src="gov_ui.js"></script>
+</body>
+</html>

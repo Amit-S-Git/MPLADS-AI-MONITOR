@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MPLADS AI - Settings</title>
+<link href="style.css" rel="stylesheet"/>
+<link href="settings.css" rel="stylesheet"/>
+<!-- LOGIN PROTECTION -->
+<script>
+
+        if (sessionStorage.getItem("mpladsLoggedIn") !== "true") {
+            window.location.replace("login.html");
+        }
+
+    </script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/><link href="sidebar.css" rel="stylesheet"/></head>
+<body>
+<div class="app">
+<!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+<aside class="sidebar unified-sidebar"><div class="logo unified-logo"><div class="logo-box">AI</div><div><h2>MPLADS</h2><p>AI MONITOR</p></div></div><nav class="unified-nav" id="mainNav"><a class="unified-nav-item" href="home.html"><i aria-hidden="true" class="fa-solid fa-house nav-icon"></i><span>Home</span></a><a class="unified-nav-item" href="index.html"><i aria-hidden="true" class="fa-solid fa-table-columns nav-icon"></i><span>Dashboard</span></a><a class="unified-nav-item" href="projects.html"><i aria-hidden="true" class="fa-regular fa-folder nav-icon"></i><span>Projects</span></a><a class="unified-nav-item" href="alerts.html"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation nav-icon"></i><span>Risk Alerts</span></a><a class="unified-nav-item" href="analytics.html"><i aria-hidden="true" class="fa-solid fa-chart-column nav-icon"></i><span>Analytics</span></a><a class="unified-nav-item" href="map.html"><i aria-hidden="true" class="fa-regular fa-map nav-icon"></i><span>Map View</span></a><a class="unified-nav-item" href="reports.html"><i aria-hidden="true" class="fa-regular fa-file-lines nav-icon"></i><span>Reports</span></a><a aria-current="page" class="unified-nav-item active" href="settings.html"><i aria-hidden="true" class="fa-solid fa-gear nav-icon"></i><span>Settings</span></a></nav><div class="user-box unified-user-box"><div aria-hidden="true" class="officer-avatar">NO</div><div class="officer-meta"><b>Nodal Officer</b><p>Rajasthan</p><span><i aria-hidden="true" class="online-dot"></i>Online</span></div></div></aside>
+<!-- =====================================================
+         MAIN
+    ====================================================== -->
+<main class="main">
+<button id="sidebarToggle" class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" type="button">
+<i class="fa-solid fa-bars" aria-hidden="true"></i>
+</button>
+<header class="settings-header">
+<div>
+<h1>Settings</h1>
+<p>
+                        Manage your MPLADS AI Monitor preferences
+                    </p>
+</div>
+</header>
+<!-- =====================================================
+             SETTINGS GRID
+        ====================================================== -->
+<div class="settings-grid">
+<!-- PROFILE -->
+<section class="settings-card">
+<div class="settings-card-header">
+<div>
+<h2>
+                                👤 Profile
+                            </h2>
+<p>
+                                Officer information
+                            </p>
+</div>
+<span class="section-icon">
+                            👤
+                        </span>
+</div>
+<div class="form-grid">
+<div class="form-group">
+<label>
+                                Officer Name
+                            </label>
+<input id="officerName" type="text" value="Nodal Officer"/>
+</div>
+<div class="form-group">
+<label>
+                                Role
+                            </label>
+<input id="officerRole" type="text" value="Nodal Officer"/>
+</div>
+<div class="form-group">
+<label>
+                                State
+                            </label>
+<select id="state">
+<option>
+                                    Rajasthan
+                                </option>
+<option>
+                                    Delhi
+                                </option>
+<option>
+                                    Maharashtra
+                                </option>
+<option>
+                                    Gujarat
+                                </option>
+</select>
+</div>
+<div class="form-group">
+<label>
+                                Default District
+                            </label>
+<select id="district">
+<option>
+                                    All Districts
+                                </option>
+<option>
+                                    Jaipur
+                                </option>
+<option>
+                                    Kota
+                                </option>
+<option>
+                                    Ajmer
+                                </option>
+<option>
+                                    Jodhpur
+                                </option>
+<option>
+                                    Udaipur
+                                </option>
+</select>
+</div>
+</div>
+</section>
+<!-- NOTIFICATIONS -->
+<section class="settings-card">
+<div class="settings-card-header">
+<div>
+<h2>
+                                🔔 Notifications
+                            </h2>
+<p>
+                                Choose which alerts you want to receive
+                            </p>
+</div>
+<span class="section-icon">
+                            🔔
+                        </span>
+</div>
+<div class="setting-row">
+<div>
+<b>
+                                Risk Alerts
+                            </b>
+<small>
+                                Notify when a project becomes high or medium risk
+                            </small>
+</div>
+<label class="switch">
+<input checked="" id="riskAlerts" type="checkbox"/>
+<span class="slider">
+</span>
+</label>
+</div>
+<div class="setting-row">
+<div>
+<b>
+                                Project Delay Alerts
+                            </b>
+<small>
+                                Notify when project progress falls behind
+                            </small>
+</div>
+<label class="switch">
+<input checked="" id="delayAlerts" type="checkbox"/>
+<span class="slider">
+</span>
+</label>
+</div>
+<div class="setting-row">
+<div>
+<b>
+                                Email Notifications
+                            </b>
+<small>
+                                Receive important monitoring notifications by email
+                            </small>
+</div>
+<label class="switch">
+<input id="emailAlerts" type="checkbox"/>
+<span class="slider">
+</span>
+</label>
+</div>
+</section>
+<!-- DASHBOARD PREFERENCES -->
+<section class="settings-card">
+<div class="settings-card-header">
+<div>
+<h2>
+                                📊 Dashboard Preferences
+                            </h2>
+<p>
+                                Customize dashboard behaviour
+                            </p>
+</div>
+<span class="section-icon">
+                            📊
+                        </span>
+</div>
+<div class="form-grid">
+<div class="form-group">
+<label>
+                                Default State
+                            </label>
+<select id="defaultState">
+<option>
+                                    Rajasthan
+                                </option>
+</select>
+</div>
+<div class="form-group">
+<label>
+                                Projects Per Page
+                            </label>
+<select id="projectsPerPage">
+<option value="10">
+                                    10
+                                </option>
+<option value="20">
+                                    20
+                                </option>
+<option value="50">
+                                    50
+                                </option>
+<option value="100">
+                                    100
+                                </option>
+</select>
+</div>
+</div>
+<div class="setting-row">
+<div>
+<b>
+                                Auto Refresh
+                            </b>
+<small>
+                                Automatically refresh dashboard data
+                            </small>
+</div>
+<label class="switch">
+<input checked="" id="autoRefresh" type="checkbox"/>
+<span class="slider">
+</span>
+</label>
+</div>
+</section>
+<!-- SYSTEM -->
+<section class="settings-card">
+<div class="settings-card-header">
+<div>
+<h2>
+                                🤖 System
+                            </h2>
+<p>
+                                Monitoring system preferences
+                            </p>
+</div>
+<span class="section-icon">
+                            ⚙️
+                        </span>
+</div>
+<div class="setting-row">
+<div>
+<b>
+                                AI Monitoring
+                            </b>
+<small>
+                                Enable automated project risk analysis
+                            </small>
+</div>
+<label class="switch">
+<input checked="" id="aiMonitoring" type="checkbox"/>
+<span class="slider">
+</span>
+</label>
+</div>
+<div class="setting-row">
+<div>
+<b>
+                                Demo Mode
+                            </b>
+<small>
+                                Use sample MPLADS project data
+                            </small>
+</div>
+<label class="switch">
+<input checked="" id="demoMode" type="checkbox"/>
+<span class="slider">
+</span>
+</label>
+</div>
+<div class="system-status">
+<span class="status-dot">
+</span>
+<div>
+<b>
+                                System Status
+                            </b>
+<small>
+                                MPLADS AI Monitor is running normally
+                            </small>
+</div>
+</div>
+</section>
+<!-- SECURITY -->
+<section class="settings-card">
+<div class="settings-card-header">
+<div>
+<h2>
+                                🔐 Security
+                            </h2>
+<p>
+                                Account and session controls
+                            </p>
+</div>
+<span class="section-icon">
+                            🔐
+                        </span>
+</div>
+<div class="security-actions">
+<button class="secondary-btn" onclick="changePassword()" type="button">
+
+                            🔑 Change Password
+
+                        </button>
+<button class="logout-btn" onclick="logoutUser()" type="button">
+
+                            🚪 Logout
+
+                        </button>
+</div>
+</section>
+</div>
+<!-- ACTION BUTTONS -->
+<div class="settings-actions">
+<button class="reset-settings" onclick="resetSettings()">
+
+                    Reset
+
+                </button>
+<button class="save-settings" onclick="saveSettings()">
+
+                    ✓ Save Changes
+
+                </button>
+</div>
+<div class="settings-message" id="settingsMessage">
+</div>
+</main>
+</div>
+<script>
+
+
+        /* =====================================================
+           SETTINGS IDS
+        ===================================================== */
+
+        const settingIds = [
+
+            "officerName",
+            "officerRole",
+            "state",
+            "district",
+
+            "riskAlerts",
+            "delayAlerts",
+            "emailAlerts",
+
+            "defaultState",
+            "projectsPerPage",
+
+            "autoRefresh",
+
+            "aiMonitoring",
+            "demoMode"
+
+        ];
+
+
+
+        /* =====================================================
+           SAVE SETTINGS
+        ===================================================== */
+
+        function saveSettings() {
+
+            const settings = {};
+
+
+            settingIds.forEach(
+                id => {
+
+                    const element =
+                        document.getElementById(id);
+
+
+                    if (!element) {
+                        return;
+                    }
+
+
+                    if (
+                        element.type ===
+                        "checkbox"
+                    ) {
+
+                        settings[id] =
+                            element.checked;
+
+                    }
+
+                    else {
+
+                        settings[id] =
+                            element.value;
+
+                    }
+
+                }
+            );
+
+
+            localStorage.setItem(
+                "mpladsSettings",
+                JSON.stringify(settings)
+            );
+
+
+            showSettingsMessage(
+                "✓ Settings saved successfully"
+            );
+
+        }
+
+
+
+        /* =====================================================
+           LOAD SETTINGS
+        ===================================================== */
+
+        function loadSettings() {
+
+            const saved =
+                localStorage.getItem(
+                    "mpladsSettings"
+                );
+
+
+            if (!saved) {
+                return;
+            }
+
+
+            try {
+
+                const settings =
+                    JSON.parse(saved);
+
+
+                settingIds.forEach(
+                    id => {
+
+                        const element =
+                            document.getElementById(id);
+
+
+                        if (
+                            !element ||
+                            settings[id] === undefined
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        if (
+                            element.type ===
+                            "checkbox"
+                        ) {
+
+                            element.checked =
+                                settings[id];
+
+                        }
+
+                        else {
+
+                            element.value =
+                                settings[id];
+
+                        }
+
+                    }
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Settings error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        function resetSettings() {
+
+            const confirmed =
+                confirm(
+                    "Reset all settings to default?"
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            localStorage.removeItem(
+                "mpladsSettings"
+            );
+
+
+            location.reload();
+
+        }
+
+
+
+        /* =====================================================
+           MESSAGE
+        ===================================================== */
+
+        function showSettingsMessage(
+            message
+        ) {
+
+            const messageBox =
+                document.getElementById(
+                    "settingsMessage"
+                );
+
+
+            if (!messageBox) {
+                return;
+            }
+
+
+            messageBox.innerText =
+                message;
+
+
+            messageBox.classList.add(
+                "show"
+            );
+
+
+            setTimeout(
+                () => {
+
+                    messageBox.classList.remove(
+                        "show"
+                    );
+
+                },
+                2500
+            );
+
+        }
+
+
+
+        /* =====================================================
+           CHANGE PASSWORD
+        ===================================================== */
+
+        function changePassword() {
+
+            alert(
+                "Password change module will be connected to the authentication system."
+            );
+
+        }
+
+
+
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        function logoutUser() {
+
+            const confirmed =
+                confirm(
+                    "Are you sure you want to logout?"
+                );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            sessionStorage.removeItem("mpladsLoggedIn");
+            localStorage.removeItem("mpladsLoggedIn");
+
+
+            localStorage.removeItem(
+                "mpladsUsername"
+            );
+
+
+            window.location.replace(
+                "home.html"
+            );
+
+        }
+
+
+
+        /* =====================================================
+           SIDEBAR
+        ===================================================== */
+
+        function toggleSidebar() {
+
+            document
+                .querySelector(".app")
+                .classList
+                .toggle(
+                    "sidebar-hidden"
+                );
+
+        }
+
+
+
+        /* =====================================================
+           LOAD
+        ===================================================== */
+
+        loadSettings();
+
+
+    </script>
+</body>
+</html>

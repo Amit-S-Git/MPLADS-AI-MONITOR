@@ -1,0 +1,333 @@
+/* =========================================================
+   MPLADS UNIFIED PROFESSIONAL SIDEBAR
+   Shared by Dashboard, Projects, Risk Alerts, Analytics,
+   Map View, Reports and Settings.
+   ========================================================= */
+
+.unified-sidebar {
+    z-index: 900;
+    width: 240px;
+    background: linear-gradient(180deg, #071a31 0%, #08213d 100%) !important;
+    color: #fff;
+    padding: 18px 14px !important;
+    border-right: 1px solid rgba(255, 255, 255, .04);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.unified-sidebar .unified-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    margin-bottom: 30px;
+    flex: 0 0 auto;
+}
+
+.unified-sidebar .logo-box {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    display: grid;
+    place-items: center;
+    background: #2563eb;
+    color: #fff;
+    border-radius: 11px;
+    font-weight: 700;
+    font-size: 16px;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, .22);
+}
+
+.unified-sidebar .unified-logo h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 17px;
+    line-height: 1.1;
+    letter-spacing: .3px;
+}
+
+.unified-sidebar .unified-logo p {
+    margin: 4px 0 0;
+    color: #aebbd0;
+    font-size: 9px;
+    line-height: 1;
+}
+
+.unified-sidebar .unified-nav {
+    display: grid !important;
+    gap: 6px !important;
+    align-content: start;
+}
+
+.unified-sidebar .unified-nav .unified-nav-item {
+    min-height: 44px;
+    width: 100%;
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 13px !important;
+    margin: 0 !important;
+    border-radius: 9px;
+    border: 0;
+    border-left: 3px solid transparent;
+    background: transparent;
+    color: #d7e0ed !important;
+    text-decoration: none !important;
+    font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    box-shadow: none;
+    transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+
+.unified-sidebar .unified-nav .nav-icon {
+    width: 18px;
+    flex: 0 0 18px;
+    text-align: center;
+    color: #abc0da;
+    font-size: 15px;
+}
+
+.unified-sidebar .unified-nav .unified-nav-item:hover {
+    background: rgba(255,255,255,.07) !important;
+    color: #fff !important;
+}
+
+.unified-sidebar .unified-nav .unified-nav-item:hover .nav-icon {
+    color: #fff;
+}
+
+.unified-sidebar .unified-nav .unified-nav-item.active {
+    background: #eef5ff !important;
+    color: #1558d6 !important;
+    border-left-color: #2563eb;
+    box-shadow: 0 6px 18px rgba(0,0,0,.10);
+}
+
+.unified-sidebar .unified-nav .unified-nav-item.active .nav-icon {
+    color: #2563eb !important;
+}
+
+.unified-sidebar .unified-user-box {
+    position: absolute !important;
+    left: 14px !important;
+    right: 14px !important;
+    bottom: 20px !important;
+    display: flex !important;
+    align-items: center;
+    gap: 11px;
+    padding: 12px !important;
+    background: rgba(255,255,255,.025) !important;
+    border: 1px solid rgba(148, 163, 184, .25) !important;
+    border-radius: 10px;
+}
+
+.unified-sidebar .officer-avatar {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.unified-sidebar .officer-meta {
+    min-width: 0;
+}
+
+.unified-sidebar .officer-meta b {
+    display: block;
+    color: #fff;
+    font-size: 12.5px;
+    line-height: 1.2;
+}
+
+.unified-sidebar .officer-meta p {
+    margin: 3px 0 0 !important;
+    color: #aebbd0 !important;
+    font-size: 11px !important;
+    line-height: 1.2;
+}
+
+.unified-sidebar .officer-meta span {
+    display: flex !important;
+    align-items: center;
+    gap: 5px;
+    margin-top: 4px;
+    color: #45d483 !important;
+    font-size: 11px !important;
+    line-height: 1.2;
+}
+
+.unified-sidebar .online-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22c55e;
+    display: inline-block;
+}
+
+/* Keep the hamburger aligned to the same sidebar edge on every internal page. */
+.sidebar-toggle {
+    left: 255px;
+}
+.sidebar-hidden .sidebar-toggle {
+    left: 20px;
+}
+
+@media (max-width: 700px) {
+    .unified-sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar-hidden .unified-sidebar {
+        transform: translateX(-100%);
+    }
+}
+
+
+/* =====================================================
+   UNIFIED SIDEBAR TOGGLE + PAGE HEADER ALIGNMENT
+   Matches the professional Dashboard on every page.
+   ===================================================== */
+.sidebar-toggle,
+.reports-page .sidebar-toggle,
+.reports-page .reports-toggle {
+    display: grid !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    place-items: center !important;
+    position: fixed !important;
+    top: 18px !important;
+    left: 255px !important;
+    z-index: 2000 !important;
+    width: 42px !important;
+    height: 42px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 1px solid #e5eaf0 !important;
+    border-radius: 10px !important;
+    background: #ffffff !important;
+    color: #334155 !important;
+    font-size: 17px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, .08) !important;
+    transition: left .25s ease, box-shadow .18s ease, transform .18s ease !important;
+}
+
+.sidebar-toggle:hover,
+.reports-page .sidebar-toggle:hover {
+    color: #2563eb !important;
+    box-shadow: 0 6px 16px rgba(15, 23, 42, .12) !important;
+}
+
+.sidebar-toggle i {
+    display: block;
+    font-size: 17px;
+    pointer-events: none;
+}
+
+/* Reserve exactly the same space beside the hamburger as the Dashboard. */
+.main > .header,
+.main-content > .page-header,
+.main > .settings-header,
+.reports-main > .reports-header {
+    padding-left: 60px !important;
+    box-sizing: border-box;
+}
+
+/* Keep the title vertically aligned with the button. */
+.main > .header,
+.main-content > .page-header,
+.main > .settings-header,
+.reports-main > .reports-header {
+    min-height: 54px;
+}
+
+.sidebar-hidden .sidebar-toggle,
+.sidebar-hidden .reports-toggle,
+.reports-page .sidebar-hidden .sidebar-toggle {
+    left: 20px !important;
+}
+
+/* Once the sidebar is collapsed, main content already has its own left inset. */
+.sidebar-hidden .main > .header,
+.sidebar-hidden .main-content > .page-header,
+.sidebar-hidden .main > .settings-header,
+.sidebar-hidden .reports-main > .reports-header {
+    padding-left: 0 !important;
+}
+
+@media (max-width: 700px) {
+    .sidebar-toggle,
+    .reports-page .sidebar-toggle,
+    .reports-page .reports-toggle {
+        left: 18px !important;
+        top: 16px !important;
+    }
+
+    .main > .header,
+    .main-content > .page-header,
+    .main > .settings-header,
+    .reports-main > .reports-header {
+        padding-left: 0 !important;
+        margin-top: 54px !important;
+    }
+}
+
+/* ============================================================
+   COLLAPSED SIDEBAR LAYOUT FIX
+   Force every page — especially Reports — to use the full viewport
+   once the sidebar is hidden. This overrides page-specific CSS such
+   as .reports-page .reports-main { margin-left: 240px; ... }.
+   ============================================================ */
+@media (min-width: 701px) {
+    .app.sidebar-hidden > .unified-sidebar,
+    .app.sidebar-hidden > .sidebar {
+        transform: translateX(-100%) !important;
+    }
+
+    .app.sidebar-hidden > .main,
+    .app.sidebar-hidden > .main-content,
+    .reports-page .app.sidebar-hidden > .reports-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        box-sizing: border-box !important;
+        padding-left: 85px !important;
+    }
+
+    /* Reports has a stronger page-specific desktop rule, so override it explicitly. */
+    .reports-page .app.sidebar-hidden > .reports-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding-left: 85px !important;
+        padding-right: 26px !important;
+    }
+
+    /* The 85px main inset already reserves room for the collapsed hamburger. */
+    .app.sidebar-hidden > .main > .header,
+    .app.sidebar-hidden > .main > .settings-header,
+    .app.sidebar-hidden > .main-content > .page-header,
+    .app.sidebar-hidden > .main-content > .alert-header,
+    .reports-page .app.sidebar-hidden > .reports-main > .reports-header {
+        padding-left: 0 !important;
+    }
+
+    .app.sidebar-hidden .sidebar-toggle,
+    .reports-page .app.sidebar-hidden .reports-toggle {
+        left: 20px !important;
+    }
+}

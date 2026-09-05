@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - MPLADS AI Monitor</title>
+
+    <link rel="stylesheet" href="login_style.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+
+<body>
+
+
+    <div class="login-container">
+
+
+        <div class="login-card">
+
+
+            <!-- HEADER -->
+
+            <div class="login-header">
+
+                <h1>
+                    MPLADS AI Monitor
+                </h1>
+
+                <p>
+                    Smart Monitoring • Transparent Governance
+                </p>
+
+            </div>
+
+
+
+            <!-- LOGIN FORM -->
+
+            <form onsubmit="loginUser(event)">
+
+
+                <!-- USERNAME -->
+
+                <div class="input-group">
+
+                    <label>
+                        Username
+                    </label>
+
+                    <input type="text" name="username" id="username" placeholder="Enter Username" required>
+
+                </div>
+
+
+
+                <!-- PASSWORD -->
+
+                <div class="input-group">
+
+                    <label>
+                        Password
+                    </label>
+
+                    <input type="password" name="password" id="password" placeholder="Enter Password" required>
+
+                </div>
+
+
+
+                <!-- CAPTCHA -->
+
+                <div class="captcha-box">
+
+                    <div class="captcha-code" id="captchaCode">
+
+                        7X4KP
+
+                    </div>
+
+
+                    <button type="button" class="refresh-btn" onclick="generateCaptcha()">
+
+                        <i class="fa-solid fa-rotate"></i>
+
+                    </button>
+
+                </div>
+
+
+
+                <!-- CAPTCHA INPUT -->
+
+                <div class="input-group">
+
+                    <label>
+                        Captcha
+                    </label>
+
+                    <input type="text" id="captchaInput" placeholder="Enter Captcha" autocomplete="off" required>
+
+                </div>
+
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button type="submit" class="login-btn">
+
+                    Sign In
+
+                </button>
+
+
+            </form>
+
+
+
+            <!-- BOTTOM LINKS -->
+
+            <div class="bottom-links">
+
+                <a href="#">
+                    Forgot Password?
+                </a>
+
+
+                <a href="home.html">
+                    Back to Home
+                </a>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+        /* =====================================================
+           CAPTCHA
+        ====================================================== */
+
+        let currentCaptcha = "7X4KP";
+
+
+        function generateCaptcha() {
+
+            const characters =
+                "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+
+            currentCaptcha = "";
+
+
+            for (let i = 0; i < 5; i++) {
+
+                currentCaptcha +=
+                    characters[
+                    Math.floor(
+                        Math.random() *
+                        characters.length
+                    )
+                    ];
+
+            }
+
+
+            document.getElementById(
+                "captchaCode"
+            ).innerText =
+                currentCaptcha;
+
+
+            document.getElementById(
+                "captchaInput"
+            ).value = "";
+
+        }
+
+
+
+        /* =====================================================
+           LOGIN
+        ====================================================== */
+
+        function loginUser(event) {
+
+            event.preventDefault();
+
+
+            const username =
+                document.getElementById(
+                    "username"
+                ).value.trim();
+
+
+            const password =
+                document.getElementById(
+                    "password"
+                ).value;
+
+
+            const captcha =
+                document.getElementById(
+                    "captchaInput"
+                ).value
+                    .trim()
+                    .toUpperCase();
+
+
+
+            /* -------------------------
+               BASIC VALIDATION
+            ------------------------- */
+
+            if (!username || !password) {
+
+                alert(
+                    "Please enter username and password."
+                );
+
+                return;
+
+            }
+
+
+
+            /* -------------------------
+               CAPTCHA VALIDATION
+            ------------------------- */
+
+            if (captcha !== currentCaptcha) {
+
+                alert(
+                    "Invalid CAPTCHA. Please try again."
+                );
+
+
+                generateCaptcha();
+
+
+                return;
+
+            }
+
+
+
+            /* -------------------------
+               DEMO LOGIN
+            ------------------------- */
+
+            sessionStorage.setItem("mpladsLoggedIn", "true");
+            localStorage.removeItem("mpladsLoggedIn");
+
+
+            localStorage.setItem(
+                "mpladsUsername",
+                username
+            );
+
+
+            /* -------------------------
+               AFTER LOGIN
+            ------------------------- */
+
+            window.location.href =
+                "index.html";
+
+        }
+
+
+
+        /* =====================================================
+           INITIAL CAPTCHA
+        ====================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                generateCaptcha();
+
+            }
+        );
+
+    </script>
+
+
+</body>
+
+</html>

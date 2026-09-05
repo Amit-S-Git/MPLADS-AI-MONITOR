@@ -1,0 +1,90 @@
+[
+  {
+    "id": "MPL-1001",
+    "name": "Road Construction",
+    "district": "Jaipur",
+    "sanctioned": 10.0,
+    "spent": 9.2,
+    "progress": 92
+  },
+  {
+    "id": "MPL-1002",
+    "name": "Community Hall",
+    "district": "Kota",
+    "sanctioned": 15.0,
+    "spent": 11.0,
+    "progress": 73
+  },
+  {
+    "id": "MPL-1003",
+    "name": "Water Tank",
+    "district": "Ajmer",
+    "sanctioned": 8.0,
+    "spent": 7.8,
+    "progress": 98
+  },
+  {
+    "id": "MPL-1004",
+    "name": "School Building",
+    "district": "Jodhpur",
+    "sanctioned": 20.0,
+    "spent": 25.0,
+    "progress": 61
+  },
+  {
+    "id": "MPL-1005",
+    "name": "Street Lighting",
+    "district": "Jaipur",
+    "sanctioned": 6.0,
+    "spent": 5.5,
+    "progress": 90
+  },
+  {
+    "id": "MPL-1006",
+    "name": "Drainage System",
+    "district": "Kota",
+    "sanctioned": 12.0,
+    "spent": 14.5,
+    "progress": 48
+  },
+  {
+    "id": "MPL-1007",
+    "name": "Health Centre",
+    "district": "Udaipur",
+    "sanctioned": 25.0,
+    "spent": 18.0,
+    "progress": 72
+  },
+  {
+    "id": "MPL-1008",
+    "name": "Community Park",
+    "district": "Ajmer",
+    "sanctioned": 9.0,
+    "spent": 8.5,
+    "progress": 94
+  },
+  {
+    "id": "MPL-1009",
+    "name": "Road Repair",
+    "district": "Jodhpur",
+    "sanctioned": 11.0,
+    "spent": 17.0,
+    "progress": 40
+  },
+  {
+    "id": "MPL-1010",
+    "name": "Drinking Water Facility",
+    "district": "Udaipur",
+    "sanctioned": 7.0,
+    "spent": 4.5,
+    "progress": 65
+  },
+  {
+    "id": "MPL-1011",
+    "name": "road development",
+    "district": "Jaipur",
+    "sanctioned": 1.0,
+    "spent": 0.5,
+    "progress": 45
+  }
+]

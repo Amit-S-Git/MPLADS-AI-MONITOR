@@ -1,0 +1,2795 @@
+/* =====================================================
+   MPLADS AI MONITOR
+   HOME PAGE CSS
+===================================================== */
+
+
+/* =====================================================
+   GLOBAL RESET
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+:root {
+
+    --navy: #102b56;
+
+    --navy-dark: #06295e;
+
+    --blue: #285bd7;
+
+    --blue-bright: #165bd8;
+
+    --blue-light: #eaf2ff;
+
+    --text: #18345f;
+
+    --muted: #66758c;
+
+    --white: #ffffff;
+
+}
+
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+body {
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    background: #f7f9fc;
+
+    color: #1e293b;
+
+    line-height: 1.5;
+
+    overflow-x: hidden;
+
+}
+
+
+img {
+
+    display: block;
+
+    max-width: 100%;
+
+}
+
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.site-header {
+
+    height: 126px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 3.9%;
+
+    background: rgba(255, 255, 255, 0.98);
+
+    border-bottom: 1px solid #dfe7f2;
+
+    position: relative;
+
+    z-index: 20;
+
+}
+
+
+.logo-section {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
+}
+
+
+.logo-section img {
+
+    width: 58px;
+
+    height: 76px;
+
+    object-fit: contain;
+
+}
+
+
+.brand-text h2 {
+
+    color: #17355f;
+
+    font-size: 31px;
+
+    line-height: 1;
+
+    font-weight: 750;
+
+    letter-spacing: 0.2px;
+
+}
+
+
+.brand-text p {
+
+    margin-top: 7px;
+
+    color: #173f86;
+
+    font-size: 15px;
+
+    letter-spacing: 0.1px;
+
+}
+
+
+.home-navigation {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px;
+    border: 1px solid #e4eaf3;
+    border-radius: 14px;
+    background: #f7f9fd;
+    box-shadow: 0 4px 14px rgba(16,43,86,0.06);
+}
+
+.home-navigation a {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #29446d;
+    font-size: 17px;
+    font-weight: 650;
+    letter-spacing: 0.1px;
+    transition: background 0.22s ease, color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.home-navigation a::after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 6px;
+    height: 2px;
+    border-radius: 999px;
+    background: #2563d8;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.22s ease;
+}
+
+.home-navigation a:hover {
+    color: #1457d9;
+    background: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(20,87,217,0.08);
+}
+
+.home-navigation a:hover::after,
+.home-navigation a.active::after {
+    transform: scaleX(1);
+}
+
+.home-navigation a.active {
+    color: #1457d9;
+    background: #ffffff;
+    box-shadow: 0 3px 10px rgba(20,87,217,0.10);
+}
+
+/* Login is intentionally not part of the top navigation. */
+.home-navigation .login-link {
+    display: none;
+}
+
+
+
+/* =====================================================
+   GOVERNMENT STYLE TICKER
+===================================================== */
+
+.ticker-bar {
+
+    width: 100%;
+
+    height: 46px;
+
+    background: #06295e;
+
+    color: #ffffff;
+
+    overflow: hidden;
+
+    position: relative;
+
+    z-index: 15;
+
+    display: flex;
+
+    align-items: center;
+
+}
+
+
+.ticker-track {
+
+    display: flex;
+
+    width: max-content;
+
+    flex-shrink: 0;
+
+    animation: ticker-scroll 42s linear infinite;
+
+    will-change: transform;
+
+}
+
+
+.ticker-content {
+
+    display: flex;
+
+    align-items: center;
+
+    flex-shrink: 0;
+
+    white-space: nowrap;
+
+}
+
+
+.ticker-content span {
+
+    color: #ffffff;
+
+    font-size: 16px;
+
+    font-weight: 650;
+
+    letter-spacing: 0.1px;
+
+    padding: 0 27px;
+
+}
+
+
+.ticker-content b {
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+}
+
+
+.ticker-bar:hover .ticker-track {
+
+    animation-play-state: paused;
+
+}
+
+
+@keyframes ticker-scroll {
+
+    from {
+
+        transform: translateX(0);
+
+    }
+
+    to {
+
+        transform: translateX(-50%);
+
+    }
+
+}
+
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+/*
+   IMPORTANT:
+
+   The hero is deliberately taller than the previous
+   version so more of the Parliament photograph is visible.
+
+   Your Parliament image:
+
+       images/parliament.png
+
+   is used directly as the background.
+*/
+
+.hero {
+
+    position: relative;
+
+    min-height: 755px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 48px 5.1%;
+
+    overflow: hidden;
+
+    background-image:
+
+        linear-gradient(
+
+            90deg,
+
+            rgba(239, 247, 255, 0.95) 0%,
+
+            rgba(239, 247, 255, 0.86) 17%,
+
+            rgba(239, 247, 255, 0.62) 32%,
+
+            rgba(239, 247, 255, 0.32) 47%,
+
+            rgba(239, 247, 255, 0.10) 65%,
+
+            rgba(239, 247, 255, 0.02) 80%,
+
+            rgba(239, 247, 255, 0) 100%
+
+        ),
+
+        url("images/parliament.png");
+
+    /*
+       This is important.
+
+       Cover keeps the Parliament photo filling
+       the entire hero without stretching it.
+    */
+
+    background-size: cover;
+
+    /*
+       Centering the image vertically gives a much
+       better balance between:
+
+       - sky
+       - Indian flag
+       - Parliament building
+       - trees
+       - road
+    */
+
+    background-position: center center;
+
+    background-repeat: no-repeat;
+
+}
+
+
+/* =====================================================
+   HERO SUBTLE OVERLAY
+===================================================== */
+
+.hero::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+
+        linear-gradient(
+
+            180deg,
+
+            rgba(255,255,255,0.02) 0%,
+
+            rgba(255,255,255,0) 70%,
+
+            rgba(8,50,105,0.08) 100%
+
+        );
+
+    pointer-events: none;
+
+}
+
+
+
+/* =====================================================
+   HERO CONTENT
+===================================================== */
+
+.hero-content {
+
+    position: relative;
+
+    z-index: 3;
+
+    width: min(800px, 65%);
+
+    /* Shifts the whole hero text/button block upward
+       within the vertically-centered hero section */
+    margin-top: -60px;
+
+}
+
+
+/* =====================================================
+   DIGITAL INDIA LOGO
+===================================================== */
+/* =====================================================
+   DIGITAL INDIA LOGO (Adjusted Upward)
+===================================================== */
+
+.hero-brand-row {
+    display: block;
+    width: 100%;
+    margin-bottom: 13px;
+}
+
+.digital-india {
+    display: block;
+    width: 145px;
+    margin: -50px 0 0; /* shifted upward */
+}
+
+.digital-india img {
+    display: block;
+    width: 145px;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+
+
+/* =====================================================
+   HERO HEADING
+===================================================== */
+
+.hero h1 {
+
+    margin: 17px 0 23px;
+
+    color: #102b56;
+
+    font-size: clamp(
+        46px,
+        4.15vw,
+        64px
+    );
+
+    line-height: 1.06;
+
+    letter-spacing: -2.2px;
+
+    font-weight: 800;
+
+    text-shadow:
+
+        0 2px 7px
+        rgba(255,255,255,0.75);
+
+}
+
+
+.hero h1 span {
+
+    color: #2b5fd8;
+
+}
+
+
+
+/* =====================================================
+   HERO DESCRIPTION
+===================================================== */
+
+.hero p {
+
+    max-width: 700px;
+
+    color: #1e3761;
+
+    font-size: 20px;
+
+    line-height: 1.75;
+
+    text-shadow:
+
+        0 1px 3px
+        rgba(255,255,255,0.75);
+
+}
+
+
+
+/* =====================================================
+   LOGIN BUTTON
+===================================================== */
+
+.hero-buttons {
+
+    margin-top: 28px;
+
+}
+
+
+.btn-primary {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 13px;
+
+    min-width: 230px;
+
+    min-height: 74px;
+
+    padding: 15px 31px;
+
+    border:
+        2px solid
+        rgba(255,255,255,0.90);
+
+    border-radius: 10px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #4773df,
+            #315bd0
+        );
+
+    box-shadow:
+
+        0 8px 17px
+        rgba(31,74,163,0.24),
+
+        inset 0 1px 0
+        rgba(255,255,255,0.30);
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 24px;
+
+    font-weight: 800;
+
+    transition:
+
+        transform 0.2s ease,
+
+        box-shadow 0.2s ease;
+
+}
+
+
+.btn-primary i {
+
+    font-size: 26px;
+
+}
+
+
+.btn-primary:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+
+        0 12px 24px
+        rgba(31,74,163,0.30),
+
+        inset 0 1px 0
+        rgba(255,255,255,0.30);
+
+}
+
+
+
+/* =====================================================
+   HERO FEATURES
+===================================================== */
+
+.hero-tags {
+
+    display: flex;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    gap: 29px;
+
+    margin-top: 27px;
+
+    color: #213b68;
+
+    font-size: 18px;
+
+}
+
+
+.hero-tags span {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.hero-tags i {
+
+    width: 26px;
+
+    height: 26px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    background: #2c63d9;
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+}
+
+
+
+/* =====================================================
+   COMMON SECTION HEADINGS
+===================================================== */
+
+.section-heading {
+
+    text-align: center;
+
+    margin-bottom: 34px;
+
+}
+
+
+.section-heading h2 {
+
+    color: #102a56;
+
+    font-size: 29px;
+
+    line-height: 1.2;
+
+}
+
+
+.section-heading p {
+
+    margin-top: 5px;
+
+    color: #718096;
+
+    font-size: 11px;
+
+}
+
+
+
+/* =====================================================
+   LEADERSHIP
+===================================================== */
+
+.leadership {
+
+    padding: 58px 5%;
+
+    background: #ffffff;
+
+}
+
+
+.leaders {
+
+    max-width: 1140px;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+}
+
+
+.leader-card {
+
+    background: #ffffff;
+
+    padding: 20px 15px;
+
+    border:
+        1px solid #e8edf4;
+
+    border-radius: 12px;
+
+    text-align: center;
+
+    box-shadow:
+
+        0 5px 15px
+        rgba(0,0,0,0.05);
+
+}
+
+
+.leader-image {
+
+    width: 100px;
+
+    height: 100px;
+
+    margin: 0 auto 13px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    border:
+        4px solid #eef4fb;
+
+    background: #eef2f7;
+
+    display: grid;
+
+    place-items: center;
+
+}
+
+
+.leader-image img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+}
+
+
+.leader-image.placeholder {
+
+    color: #78869a;
+
+    font-size: 30px;
+
+}
+
+
+.leader-card h4 {
+
+    font-size: 13px;
+
+    color: #20324d;
+
+}
+
+
+.leader-card p {
+
+    margin-top: 4px;
+
+    color: #78869a;
+
+    font-size: 10px;
+
+}
+
+
+
+/* =====================================================
+   ABOUT
+===================================================== */
+
+.about {
+
+    display: flex;
+
+    gap: 55px;
+
+    align-items: center;
+
+    padding: 62px 5%;
+
+    background: #f7faff;
+
+}
+
+
+.about-content {
+
+    flex: 1;
+
+    max-width: 580px;
+
+}
+
+
+.small-label {
+
+    color: #2563eb;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+}
+
+
+.about-content h2 {
+
+    font-size: 34px;
+
+    color: #102a56;
+
+    margin: 8px 0 17px;
+
+}
+
+
+.about-content > p {
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    line-height: 1.8;
+
+}
+
+
+.about-list {
+
+    display: grid;
+
+    gap: 9px;
+
+    margin-top: 21px;
+
+}
+
+
+.about-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 10px 12px;
+
+    background: #ffffff;
+
+    border:
+        1px solid #e9eef5;
+
+    border-radius: 9px;
+
+    box-shadow:
+
+        0 3px 10px
+        rgba(0,0,0,0.035);
+
+    font-size: 11px;
+
+}
+
+
+.about-icon {
+
+    width: 31px;
+
+    height: 31px;
+
+    display: grid;
+
+    place-items: center;
+
+    background: #edf5ff;
+
+    color: #1769d2;
+
+    border-radius: 8px;
+
+    flex: 0 0 31px;
+
+}
+
+
+.about-image {
+
+    flex: 1;
+
+}
+
+
+.about-image img {
+
+    width: 100%;
+
+    max-width: 620px;
+
+    margin-left: auto;
+
+    border-radius: 14px;
+
+    box-shadow:
+
+        0 11px 26px
+        rgba(0,0,0,0.09);
+
+}
+
+
+
+/* =====================================================
+   FEATURES
+===================================================== */
+
+.features {
+
+    padding: 50px 4.5% 48px;
+
+    background: #f9fafc;
+
+}
+
+
+.feature-heading {
+
+    margin-bottom: 28px;
+
+}
+
+
+.feature-heading h2,
+
+.partner-heading h2 {
+
+    position: relative;
+
+    display: inline-block;
+
+}
+
+
+.heading-line {
+
+    width: 24px;
+
+    height: 3px;
+
+    background: #f4a62a;
+
+    margin: 7px auto 0;
+
+    border-radius: 4px;
+
+}
+
+
+.feature-grid {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, minmax(0, 1fr));
+
+    gap: 10px;
+
+}
+
+
+.feature-card {
+
+    min-height: 155px;
+
+    background: #ffffff;
+
+    border:
+        1px solid #edf0f5;
+
+    border-radius: 8px;
+
+    padding: 17px 10px 14px;
+
+    text-align: center;
+
+    box-shadow:
+
+        0 3px 10px
+        rgba(15,23,42,0.045);
+
+    transition:
+
+        transform 0.2s ease,
+
+        box-shadow 0.2s ease;
+
+}
+
+
+.feature-card:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+
+        0 8px 20px
+        rgba(15,23,42,0.09);
+
+}
+
+
+.feature-icon {
+
+    width: 47px;
+
+    height: 47px;
+
+    margin: 0 auto 10px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 12px;
+
+    font-size: 20px;
+
+}
+
+
+.feature-icon.blue {
+
+    background: #e5efff;
+
+    color: #2563eb;
+
+}
+
+
+.feature-icon.orange {
+
+    background: #fff0e5;
+
+    color: #ef6b31;
+
+}
+
+
+.feature-icon.green {
+
+    background: #e7f8ed;
+
+    color: #1aaa58;
+
+}
+
+
+.feature-icon.purple {
+
+    background: #f0eaff;
+
+    color: #7a4bea;
+
+}
+
+
+.feature-icon.teal {
+
+    background: #e5f7f2;
+
+    color: #18a58a;
+
+}
+
+
+.feature-icon.navy {
+
+    background: #e7efff;
+
+    color: #2b68d5;
+
+}
+
+
+.feature-card h3 {
+
+    color: #172b4d;
+
+    font-size: 11px;
+
+    line-height: 1.25;
+
+}
+
+
+.feature-card p {
+
+    margin-top: 6px;
+
+    color: #6f7c90;
+
+    font-size: 8px;
+
+    line-height: 1.5;
+
+}
+
+
+
+/* =====================================================
+   STATISTICS
+===================================================== */
+
+.stats {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    background: #08367e;
+
+    color: #ffffff;
+
+    min-height: 143px;
+
+}
+
+
+.stat-box {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 13px;
+
+    padding: 24px 20px;
+
+    border-right:
+        1px solid
+        rgba(255,255,255,0.22);
+
+}
+
+
+.stat-box:last-child {
+
+    border-right: none;
+
+}
+
+
+.stat-icon {
+
+    width: 52px;
+
+    height: 52px;
+
+    flex: 0 0 52px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 50%;
+
+    font-size: 20px;
+
+}
+
+
+.stat-blue {
+
+    background: #1677f7;
+
+}
+
+
+.stat-green {
+
+    background: #39aa55;
+
+}
+
+
+.stat-purple {
+
+    background: #704bd1;
+
+}
+
+
+.stat-orange {
+
+    background: #d87522;
+
+}
+
+
+.stat-box h2 {
+
+    font-size: 28px;
+
+    line-height: 1;
+
+    margin-bottom: 3px;
+
+}
+
+
+.stat-box p {
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+.stat-box small {
+
+    display: block;
+
+    margin-top: 4px;
+
+    color: #d9e7ff;
+
+    font-size: 8px;
+
+}
+
+
+
+/* =====================================================
+   PARTNERS
+===================================================== */
+
+.partners {
+
+    padding: 55px 4.5% 54px;
+
+    background: #ffffff;
+
+}
+
+
+.partner-heading {
+
+    margin-bottom: 28px;
+
+}
+
+
+.partner-grid {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, minmax(0, 1fr));
+
+    gap: 10px;
+
+}
+
+
+.partner-card {
+
+    min-height: 126px;
+
+    padding: 13px 9px;
+
+    background: #ffffff;
+
+    border:
+        1px solid #edf0f5;
+
+    border-radius: 9px;
+
+    box-shadow:
+
+        0 3px 11px
+        rgba(15,23,42,0.045);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    text-align: center;
+
+}
+
+
+.partner-card strong {
+
+    margin-top: 5px;
+
+    color: #233552;
+
+    font-size: 9px;
+
+}
+
+
+.partner-card > span {
+
+    margin-top: 3px;
+
+    color: #7a8798;
+
+    font-size: 7px;
+
+    line-height: 1.35;
+
+}
+
+
+
+/* =====================================================
+   PARTNER IMAGES
+===================================================== */
+
+.partner-image {
+
+    display: grid;
+
+    place-items: center;
+
+}
+
+
+.emblem-symbol {
+
+    width: 44px;
+
+    height: 48px;
+
+}
+
+
+.emblem-symbol img {
+
+    width: 38px;
+
+    height: 45px;
+
+    object-fit: contain;
+
+}
+
+
+
+/* =====================================================
+   PARTNER LOGOS
+===================================================== */
+
+.partner-logo {
+
+    min-height: 48px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+
+.mospilogo {
+
+    gap: 0;
+
+    font-weight: 800;
+
+    font-size: 26px;
+
+    letter-spacing: -2px;
+
+}
+
+
+.logo-m {
+
+    color: #1b73c9;
+
+}
+
+
+.logo-o {
+
+    color: #ef7c24;
+
+}
+
+
+.logo-spi {
+
+    color: #2f5484;
+
+    letter-spacing: -1px;
+
+}
+
+
+.text-logo {
+
+    color: #205bd5;
+
+    font-size: 24px;
+
+    font-weight: 800;
+
+}
+
+
+.nic-logo {
+
+    color: #1765b4;
+
+    font-size: 27px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+}
+
+
+.digital-logo {
+
+    position: relative;
+
+    color: #3e5777;
+
+    font-size: 17px;
+
+    font-style: italic;
+
+    font-weight: 700;
+
+    gap: 7px;
+
+}
+
+
+.digital-mark {
+
+    width: 38px;
+
+    height: 38px;
+
+    border:
+        5px solid #16a6a4;
+
+    border-right-color: #ed6c38;
+
+    border-radius: 50%;
+
+    transform: rotate(-22deg);
+
+    position: relative;
+
+}
+
+
+.digital-mark::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 4px -3px 3px 4px;
+
+    border:
+        5px solid #258bd1;
+
+    border-radius: 50%;
+
+    border-top-color: transparent;
+
+}
+
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+
+    background: #06295e;
+
+    color: #ffffff;
+
+    padding: 31px 4.5% 12px;
+
+}
+
+
+.footer-top {
+
+    display: grid;
+
+    grid-template-columns:
+        1.65fr 1fr 1.25fr 1.45fr;
+
+    gap: 32px;
+
+    max-width: 1180px;
+
+    margin: auto;
+
+}
+
+
+.footer-brand-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+}
+
+
+.footer-emblem {
+
+    width: 32px;
+
+    height: 38px;
+
+    display: grid;
+
+    place-items: center;
+
+}
+
+
+.footer-emblem img {
+
+    width: 32px;
+
+    height: 38px;
+
+    object-fit: contain;
+
+    filter:
+        grayscale(1)
+        brightness(4);
+
+}
+
+
+.footer-brand h3 {
+
+    font-size: 15px;
+
+    line-height: 1.1;
+
+}
+
+
+.footer-brand p {
+
+    color: #d0ddf0;
+
+    font-size: 8px;
+
+    margin-top: 3px;
+
+}
+
+
+.footer-description {
+
+    max-width: 280px;
+
+    margin-top: 11px;
+
+    color: #c0d0e7 !important;
+
+    font-size: 8px !important;
+
+    line-height: 1.55;
+
+}
+
+
+.social-links {
+
+    display: flex;
+
+    gap: 6px;
+
+    margin-top: 12px;
+
+}
+
+
+.social-links a {
+
+    width: 23px;
+
+    height: 23px;
+
+    display: grid;
+
+    place-items: center;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.35);
+
+    border-radius: 50%;
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    transition: 0.2s ease;
+
+}
+
+
+.social-links a:hover {
+
+    background:
+        rgba(255,255,255,0.12);
+
+    transform: translateY(-2px);
+
+}
+
+
+.footer-column {
+
+    padding-left: 18px;
+
+    border-left:
+        1px solid
+        rgba(255,255,255,0.16);
+
+}
+
+
+.footer-column h4 {
+
+    margin-bottom: 10px;
+
+    font-size: 10px;
+
+}
+
+
+.footer-column a {
+
+    display: block;
+
+    color: #c4d4eb;
+
+    text-decoration: none;
+
+    margin: 6px 0;
+
+    font-size: 8px;
+
+    transition: 0.2s ease;
+
+}
+
+
+.footer-column a:hover {
+
+    color: #ffffff;
+
+    transform: translateX(2px);
+
+}
+
+
+.footer-column p {
+
+    color: #c4d4eb;
+
+    font-size: 8px;
+
+    line-height: 1.5;
+
+    margin: 6px 0;
+
+}
+
+
+.contact-column p i {
+
+    margin-right: 5px;
+
+    width: 10px;
+
+}
+
+
+.footer-bottom {
+
+    max-width: 1180px;
+
+    margin: 18px auto 0;
+
+    padding-top: 10px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,0.16);
+
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    color: #9eb2cf;
+
+    font-size: 7.5px;
+
+}
+
+
+
+/* =====================================================
+   LARGE SCREENS
+===================================================== */
+
+@media (min-width: 1600px) {
+
+    .hero {
+
+        min-height: 755px;
+
+        background-position: center center;
+
+    }
+
+
+    .hero-content {
+
+        width: 800px;
+
+    }
+
+
+    .digital-india,
+
+    .digital-india img {
+
+        width: 145px;
+
+    }
+
+
+    .hero h1 {
+
+        font-size: 63px;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   LARGE TABLETS / SMALL DESKTOP
+===================================================== */
+
+@media (max-width: 1200px) {
+
+    .brand-text h2 {
+
+        font-size: 26px;
+
+    }
+
+
+    .home-navigation a {
+
+        font-size: 19px;
+
+    }
+
+
+    .feature-grid,
+
+    .partner-grid {
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+    }
+
+
+    .hero-content {
+
+        width: 66%;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   TABLETS
+===================================================== */
+
+@media (max-width: 950px) {
+
+    .site-header {
+
+        height: auto;
+
+        min-height: 105px;
+
+        padding: 18px 5%;
+
+    }
+
+
+    .hero {
+
+        min-height: 700px;
+
+        padding: 45px 6%;
+
+        background-position: center center;
+
+    }
+
+
+    .hero-content {
+
+        width: 100%;
+
+        max-width: 760px;
+
+    }
+
+
+    .digital-india,
+
+    .digital-india img {
+
+        width: 145px;
+
+    }
+
+
+    .leaders {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .about {
+
+        flex-direction: column;
+
+    }
+
+
+    .about-content,
+
+    .about-image {
+
+        width: 100%;
+
+        max-width: none;
+
+    }
+
+
+    .about-image img {
+
+        margin: auto;
+
+    }
+
+
+    .stats {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .stat-box:nth-child(2) {
+
+        border-right: none;
+
+    }
+
+
+    .stat-box:nth-child(-n+2) {
+
+        border-bottom:
+            1px solid
+            rgba(255,255,255,0.18);
+
+    }
+
+
+    .footer-top {
+
+        grid-template-columns:
+            1.4fr 1fr 1fr;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 700px) {
+
+    .site-header {
+
+        flex-direction: column;
+
+        gap: 18px;
+
+        text-align: center;
+
+    }
+
+
+    .logo-section {
+
+        justify-content: center;
+
+    }
+
+
+    .brand-text h2 {
+
+        font-size: 23px;
+
+    }
+
+
+    .home-navigation {
+        gap: 5px;
+        padding: 5px;
+    }
+
+    .home-navigation a {
+        min-height: 40px;
+        padding: 0 14px;
+        font-size: 15px;
+    }
+
+
+    .ticker-bar {
+
+        height: 40px;
+
+    }
+
+
+    .ticker-content span {
+
+        font-size: 13px;
+
+        padding: 0 20px;
+
+    }
+
+
+    .ticker-content b {
+
+        font-size: 11px;
+
+    }
+
+
+    .hero {
+
+        min-height: 680px;
+
+        padding: 38px 6%;
+
+        background-position: center center;
+
+        background-image:
+
+            linear-gradient(
+
+                90deg,
+
+                rgba(239,247,255,0.96) 0%,
+
+                rgba(239,247,255,0.86) 28%,
+
+                rgba(239,247,255,0.48) 60%,
+
+                rgba(239,247,255,0.08) 100%
+
+            ),
+
+            url("images/parliament.png");
+
+    }
+
+
+    .digital-india,
+
+    .digital-india img {
+
+        width: 135px;
+
+    }
+
+
+    .hero h1 {
+
+        font-size: 43px;
+
+        letter-spacing: -1.5px;
+
+    }
+
+
+    .hero p {
+
+        font-size: 17px;
+
+    }
+
+
+    .btn-primary {
+
+        min-height: 60px;
+
+        min-width: 190px;
+
+        font-size: 20px;
+
+    }
+
+
+    .hero-tags {
+
+        gap: 15px;
+
+        font-size: 14px;
+
+    }
+
+
+    .feature-grid,
+
+    .partner-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .footer-top {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .footer-brand {
+
+        grid-column: 1 / -1;
+
+    }
+
+
+    .footer-bottom {
+
+        flex-direction: column;
+
+        text-align: center;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 450px) {
+
+    .logo-section img {
+
+        width: 45px;
+
+        height: 60px;
+
+    }
+
+
+    .brand-text h2 {
+
+        font-size: 19px;
+
+    }
+
+
+    .brand-text p {
+
+        font-size: 10px;
+
+    }
+
+
+    .home-navigation {
+        width: 100%;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    .home-navigation a {
+        min-height: 38px;
+        padding: 0 12px;
+        font-size: 14px;
+    }
+
+
+    .ticker-content span {
+
+        font-size: 12px;
+
+        padding: 0 16px;
+
+    }
+
+
+    .hero {
+
+        min-height: 690px;
+
+        padding: 35px 6%;
+
+        background-position: center center;
+
+    }
+
+
+    .digital-india,
+
+    .digital-india img {
+
+        width: 125px;
+
+    }
+
+
+    .hero h1 {
+
+        font-size: 34px;
+
+    }
+
+
+    .hero p {
+
+        font-size: 15px;
+
+    }
+
+
+    .hero-tags {
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+
+    .leaders,
+
+    .feature-grid,
+
+    .partner-grid,
+
+    .stats,
+
+    .footer-top {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .stat-box {
+
+        border-right: none !important;
+
+        border-bottom:
+            1px solid
+            rgba(255,255,255,0.18);
+
+    }
+
+
+    .stat-box:last-child {
+
+        border-bottom: none;
+
+    }
+
+
+    .footer-brand {
+
+        grid-column: auto;
+
+    }
+
+}
+
+/* =====================================================
+   HOME PAGE VISIBILITY + SCROLL EXPERIENCE
+   Overrides: clear section rhythm, readable text, no
+   accidental clipping, and better mobile/tablet flow.
+===================================================== */
+
+html {
+    scroll-padding-top: 18px;
+}
+
+body {
+    min-width: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.site-header {
+    min-height: 96px;
+    height: auto;
+}
+
+.hero {
+    min-height: clamp(620px, 72vh, 760px);
+    height: auto;
+    padding: 56px 5.5% 72px;
+    overflow: visible;
+}
+
+.hero-content {
+    width: min(760px, 62%);
+    margin-top: 0;
+}
+
+.digital-india {
+    margin: 0 0 18px;
+}
+
+.hero h1 {
+    font-size: clamp(42px, 4.2vw, 62px);
+    margin: 8px 0 20px;
+}
+
+.hero p {
+    max-width: 680px;
+    font-size: clamp(16px, 1.35vw, 20px);
+    line-height: 1.65;
+}
+
+.hero-buttons {
+    margin-top: 24px;
+}
+
+.btn-primary {
+    min-height: 58px;
+    min-width: 190px;
+    font-size: 20px;
+}
+
+.hero-tags {
+    gap: 16px 24px;
+    margin-top: 22px;
+    font-size: 16px;
+}
+
+.scroll-cue {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    z-index: 4;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: #173f86;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .4px;
+    opacity: .78;
+    pointer-events: none;
+}
+
+.scroll-cue i {
+    font-size: 12px;
+    animation: home-scroll-bounce 1.7s ease-in-out infinite;
+}
+
+@keyframes home-scroll-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(5px); }
+}
+
+.leadership,
+.about,
+.features,
+.partners {
+    scroll-margin-top: 18px;
+}
+
+.leadership {
+    padding: 72px 5%;
+}
+
+.about {
+    padding: 72px 5%;
+}
+
+.features {
+    padding: 68px 5%;
+}
+
+.stats {
+    padding: 54px 5%;
+}
+
+.partners {
+    padding: 68px 5%;
+}
+
+.section-heading {
+    margin-bottom: 38px;
+}
+
+.section-heading h2 {
+    font-size: clamp(25px, 2.3vw, 34px);
+}
+
+.section-heading p {
+    font-size: 14px;
+}
+
+.leader-card {
+    padding: 24px 18px;
+}
+
+.leader-card h4 {
+    font-size: 15px;
+}
+
+.leader-card p {
+    font-size: 12px;
+}
+
+.about-content h2 {
+    font-size: clamp(28px, 3vw, 38px);
+}
+
+.about-content > p {
+    font-size: 15px;
+    line-height: 1.75;
+}
+
+.about-item {
+    font-size: 14px;
+    padding: 12px 14px;
+}
+
+.feature-grid {
+    gap: 16px;
+}
+
+.feature-card {
+    min-height: 185px;
+    padding: 22px 16px 18px;
+}
+
+.feature-card h3 {
+    font-size: 15px;
+}
+
+.feature-card p {
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.stat-box {
+    min-height: 135px;
+    padding: 22px 24px;
+}
+
+.partner-grid {
+    gap: 16px;
+}
+
+.partner-card {
+    min-height: 145px;
+    padding: 20px 14px;
+}
+
+.partner-card strong {
+    font-size: 13px;
+}
+
+.partner-card > span {
+    font-size: 11px;
+}
+
+footer {
+    padding: 48px 5% 18px;
+}
+
+.footer-column a,
+.footer-column p {
+    font-size: 12px;
+}
+
+.footer-column h4 {
+    font-size: 14px;
+}
+
+.footer-brand h3 {
+    font-size: 18px;
+}
+
+.footer-brand p,
+.footer-description {
+    font-size: 11px !important;
+}
+
+.footer-bottom {
+    font-size: 10px;
+}
+
+/* Tablet: keep each section comfortable instead of squeezing it. */
+@media (max-width: 1100px) {
+    .hero-content {
+        width: min(720px, 78%);
+    }
+
+    .feature-grid,
+    .partner-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .leaders {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .about {
+        gap: 36px;
+    }
+}
+
+/* Mobile: stack content in a predictable reading order. */
+@media (max-width: 700px) {
+    .site-header {
+        padding: 16px 5%;
+        gap: 14px;
+    }
+
+    .logo-section {
+        width: 100%;
+    }
+
+    .home-navigation {
+        width: 100%;
+        justify-content: center;
+        overflow-x: auto;
+    }
+
+    .home-navigation a {
+        flex: 1 1 auto;
+        white-space: nowrap;
+    }
+
+    .ticker-bar {
+        height: 38px;
+    }
+
+    .hero {
+        min-height: auto;
+        padding: 42px 7% 64px;
+        background-position: 62% center;
+    }
+
+    .hero-content {
+        width: 100%;
+        max-width: none;
+    }
+
+    .digital-india,
+    .digital-india img {
+        width: 120px;
+    }
+
+    .hero h1 {
+        font-size: clamp(34px, 9vw, 44px);
+        line-height: 1.1;
+        letter-spacing: -1px;
+    }
+
+    .hero p {
+        font-size: 16px;
+        line-height: 1.65;
+    }
+
+    .hero-tags {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        font-size: 14px;
+    }
+
+    .hero-tags span {
+        min-width: 0;
+    }
+
+    .hero-tags i {
+        flex: 0 0 24px;
+        width: 24px;
+        height: 24px;
+    }
+
+    .scroll-cue {
+        display: none;
+    }
+
+    .leadership,
+    .about,
+    .features,
+    .partners {
+        padding: 54px 6%;
+    }
+
+    .section-heading {
+        margin-bottom: 28px;
+    }
+
+    .section-heading h2 {
+        font-size: 26px;
+    }
+
+    .section-heading p {
+        font-size: 13px;
+    }
+
+    .leaders,
+    .feature-grid,
+    .partner-grid,
+    .stats,
+    .footer-top {
+        grid-template-columns: 1fr;
+    }
+
+    .leader-card {
+        padding: 22px 16px;
+    }
+
+    .about {
+        align-items: stretch;
+        gap: 30px;
+    }
+
+    .about-content,
+    .about-image {
+        width: 100%;
+        max-width: none;
+    }
+
+    .about-content h2 {
+        font-size: 30px;
+    }
+
+    .about-content > p {
+        font-size: 14px;
+    }
+
+    .about-item {
+        font-size: 13px;
+    }
+
+    .feature-card {
+        min-height: 0;
+        padding: 22px 18px;
+    }
+
+    .feature-card h3 {
+        font-size: 16px;
+    }
+
+    .feature-card p {
+        font-size: 13px;
+    }
+
+    .stat-box {
+        min-height: 112px;
+        padding: 20px;
+    }
+
+    .partner-card {
+        min-height: 135px;
+    }
+
+    footer {
+        padding: 40px 6% 18px;
+    }
+
+    .footer-top {
+        gap: 28px;
+    }
+
+    .footer-column {
+        padding-left: 0;
+        border-left: 0;
+        border-top: 1px solid rgba(255,255,255,.16);
+        padding-top: 22px;
+    }
+
+    .footer-brand {
+        grid-column: auto;
+    }
+
+    .footer-bottom {
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        line-height: 1.7;
+    }
+}
+
+/* Very small screens: prevent horizontal crowding and oversized controls. */
+@media (max-width: 450px) {
+    .brand-text h2 {
+        font-size: 18px;
+    }
+
+    .brand-text p {
+        font-size: 10px;
+    }
+
+    .home-navigation a {
+        min-height: 38px;
+        padding: 0 10px;
+        font-size: 13px;
+    }
+
+    .hero {
+        padding-left: 6%;
+        padding-right: 6%;
+    }
+
+    .hero h1 {
+        font-size: 33px;
+    }
+
+    .hero p {
+        font-size: 15px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .hero-tags {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Respect reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .ticker-track,
+    .scroll-cue i {
+        animation: none !important;
+    }
+}

@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MPLADS AI Monitor - Dashboard</title>
+<link href="style.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+<link href="sidebar.css" rel="stylesheet"/>
+<link href="public_dashboard.css" rel="stylesheet"/>
+<script>
+(function () {
+  const officer = sessionStorage.getItem("mpladsLoggedIn") === "true";
+  document.documentElement.classList.add(officer ? "mplads-officer-mode" : "mplads-public-mode");
+})();
+</script>
+</head>
+<body class="dashboard-page">
+
+<section id="publicDashboardView" class="public-dashboard-view" aria-label="MPLADS public dashboard">
+  <header class="public-site-header">
+    <div class="public-brand">
+      <img src="images/emblem.png" alt="Government of India Emblem">
+      <div>
+        <h1>MPLADS AI MONITOR</h1>
+        <p>Smart Monitoring • Transparent Governance</p>
+      </div>
+    </div>
+    <nav class="public-top-nav" aria-label="Public navigation">
+      <a href="home.html"><i class="fa-solid fa-house"></i> Home</a>
+      <a href="index.html" class="active"><i class="fa-solid fa-table-columns"></i> Dashboard</a>
+      <a href="login.html" class="public-login-btn"><i class="fa-solid fa-right-to-bracket"></i> LOGIN</a>
+    </nav>
+  </header>
+
+  <main class="public-dashboard-main">
+    <div class="public-title-row">
+      <div>
+        <p class="public-eyebrow">PUBLIC INFORMATION</p>
+        <h2>MPLADS Works Dashboard</h2>
+        <p>Search ongoing, completed and delayed works by district, constituency, project name or project ID.</p>
+      </div>
+      <div class="public-updated">Last updated <strong id="publicLastUpdated">—</strong></div>
+    </div>
+
+    <section class="public-summary-grid" aria-label="Public work summary">
+      <article><span>Total Works</span><strong id="publicTotalWorks">0</strong></article>
+      <article><span>Ongoing Works</span><strong id="publicOngoingWorks">0</strong></article>
+      <article><span>Completed Works</span><strong id="publicCompletedWorks">0</strong></article>
+      <article><span>Sanctioned Amount</span><strong id="publicSanctionedAmount">₹0.00 Lakh</strong></article>
+      <article><span>Expenditure</span><strong id="publicSpentAmount">₹0.00 Lakh</strong></article>
+    </section>
+
+    <section class="public-filter-panel" aria-labelledby="publicSearchHeading">
+      <div class="public-section-heading">
+        <h3 id="publicSearchHeading">Search MPLADS Works</h3>
+        <p>Use the filters to find which projects are running in a constituency or district.</p>
+      </div>
+      <form id="publicFilterForm" class="public-filters">
+        <label>State
+          <select id="publicStateFilter"><option value="">All States</option></select>
+        </label>
+        <label>District
+          <select id="publicDistrictFilter"><option value="">All Districts</option></select>
+        </label>
+        <label>Constituency
+          <select id="publicConstituencyFilter"><option value="">All Constituencies</option></select>
+        </label>
+        <label>Work Status
+          <select id="publicStatusFilter">
+            <option value="">All Statuses</option>
+            <option value="Ongoing">Ongoing</option>
+            <option value="Completed">Completed</option>
+            <option value="Delayed">Delayed</option>
+          </select>
+        </label>
+        <label class="public-project-search">Project / Project ID
+          <input id="publicProjectSearch" type="search" placeholder="e.g. road, water, MPL-1001">
+        </label>
+        <div class="public-filter-actions">
+          <button id="publicResetButton" type="button" class="public-btn public-btn-secondary">Reset</button>
+          <button type="submit" class="public-btn public-btn-primary">Search</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="public-works-section" id="publicWorksSection">
+      <div class="public-table-heading">
+        <div>
+          <h3>MPLADS Works</h3>
+          <p id="publicResultText">Showing 0 works</p>
+        </div>
+        <label class="public-quick-search">Search:
+          <input id="publicQuickSearch" type="search" placeholder="project / constituency">
+        </label>
+      </div>
+      <div class="public-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Sr. No.</th><th>Project ID</th><th>State</th><th>District</th><th>Constituency</th>
+              <th>Project / Work</th><th>Sanctioned Amount</th><th>Progress</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="publicWorksBody"></tbody>
+        </table>
+      </div>
+      <div id="publicEmptyMessage" class="public-empty" hidden>No projects match the selected filters.</div>
+    </section>
+
+    <div class="public-login-note">
+      <div><strong>Officer access</strong><span>AI risk scores, alerts, analytics, reports and investigation controls are available after login.</span></div>
+      <a href="login.html">Officer Login <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </main>
+</section>
+
+<div class="app" id="officerDashboardApp">
+<!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+<aside class="sidebar unified-sidebar" id="dashboardSidebar"><div class="logo unified-logo"><div class="logo-box">AI</div><div><h2>MPLADS</h2><p>AI MONITOR</p></div></div><nav class="unified-nav" id="mainNav"><a class="unified-nav-item" href="home.html"><i aria-hidden="true" class="fa-solid fa-house nav-icon"></i><span>Home</span></a><a aria-current="page" class="unified-nav-item active" href="index.html"><i aria-hidden="true" class="fa-solid fa-table-columns nav-icon"></i><span>Dashboard</span></a><a class="unified-nav-item protected-nav" href="projects.html"><i aria-hidden="true" class="fa-regular fa-folder nav-icon"></i><span>Projects</span></a><a class="unified-nav-item protected-nav" href="alerts.html"><i aria-hidden="true" class="fa-solid fa-triangle-exclamation nav-icon"></i><span>Risk Alerts</span></a><a class="unified-nav-item protected-nav" href="analytics.html"><i aria-hidden="true" class="fa-solid fa-chart-column nav-icon"></i><span>Analytics</span></a><a class="unified-nav-item protected-nav" href="map.html"><i aria-hidden="true" class="fa-regular fa-map nav-icon"></i><span>Map View</span></a><a class="unified-nav-item protected-nav" href="reports.html"><i aria-hidden="true" class="fa-regular fa-file-lines nav-icon"></i><span>Reports</span></a><a class="unified-nav-item protected-nav" href="settings.html"><i aria-hidden="true" class="fa-solid fa-gear nav-icon"></i><span>Settings</span></a></nav><div class="user-box unified-user-box"><div aria-hidden="true" class="officer-avatar">NO</div><div class="officer-meta"><b>Nodal Officer</b><p>Rajasthan</p><span><i aria-hidden="true" class="online-dot"></i>Online</span></div></div></aside>
+<!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+<main class="main" id="dashboardMain">
+<button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()" aria-label="Toggle sidebar" type="button">
+<i class="fa-solid fa-bars" aria-hidden="true"></i>
+</button>
+<!-- HEADER -->
+<header class="header dashboard-header">
+<div class="header-copy">
+<h1>Welcome, Nodal Officer</h1>
+<p>Monitoring MPLADS projects for transparent and effective development</p>
+</div>
+<div class="header-right dashboard-header-actions">
+<label aria-label="Select region" class="region-select">
+<i aria-hidden="true" class="fa-solid fa-location-dot"></i>
+<select>
+<option>Rajasthan</option>
+<option>All India</option>
+<option>Gujarat</option>
+<option>Maharashtra</option>
+</select>
+</label>
+<button aria-label="Notifications" class="notification" type="button">
+<i aria-hidden="true" class="fa-regular fa-bell"></i>
+<span aria-hidden="true" class="notification-dot"></span>
+</button>
+</div>
+</header>
+<!-- =====================================================
+             STAT CARDS
+        ====================================================== -->
+<section class="cards dashboard-kpis">
+<article class="card kpi-card">
+<div class="card-icon kpi-blue"><i class="fa-regular fa-folder-open"></i></div>
+<div class="kpi-copy">
+<p>Total Projects</p>
+<h2 id="totalProjects">—</h2>
+<small>All MPLADS projects</small>
+</div>
+</article>
+<article class="card kpi-card">
+<div class="card-icon kpi-green"><i class="fa-solid fa-check"></i></div>
+<div class="kpi-copy">
+<p>Completed</p>
+<h2 id="completedProjects">—</h2>
+<small id="completedCardHint">Completed projects</small>
+</div>
+</article>
+<article class="card kpi-card">
+<div class="card-icon kpi-orange"><i class="fa-regular fa-clock"></i></div>
+<div class="kpi-copy">
+<p>Ongoing</p>
+<h2 id="ongoingProjects">—</h2>
+<small id="ongoingCardHint">Active projects</small>
+</div>
+</article>
+<article class="card kpi-card">
+<div class="card-icon kpi-red"><i class="fa-solid fa-exclamation"></i></div>
+<div class="kpi-copy">
+<p>Delayed</p>
+<h2 id="delayedProjects">—</h2>
+<small id="delayedCardHint">Projects needing attention</small>
+</div>
+</article>
+<article class="card kpi-card">
+<div class="card-icon kpi-purple"><i class="fa-solid fa-triangle-exclamation"></i></div>
+<div class="kpi-copy">
+<p>High Risk</p>
+<h2 id="highRisk">—</h2>
+<small>AI flagged projects</small>
+</div>
+</article>
+</section>
+<!-- =====================================================
+             ANALYTICS
+        ====================================================== -->
+<section class="analytics">
+<!-- PROJECT STATUS -->
+<div class="panel">
+<div class="panel-title-row dashboard-panel-title">
+<h3><i class="fa-regular fa-clipboard"></i> Project Status Overview</h3>
+<a href="projects.html">View Details <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<div class="status">
+<div>
+<span><i class="status-dot completed-dot"></i>Completed</span>
+<b id="completedPercent">
+                                65.6%
+                            </b>
+</div>
+<div class="progress">
+<div class="green-bar" id="completedBar">
+</div>
+</div>
+</div>
+<div class="status">
+<div>
+<span><i class="status-dot ongoing-dot"></i>Ongoing</span>
+<b id="ongoingPercent">
+                                24.8%
+                            </b>
+</div>
+<div class="progress">
+<div class="orange-bar" id="ongoingBar">
+</div>
+</div>
+</div>
+<div class="status">
+<div>
+<span><i class="status-dot delayed-dot"></i>Delayed</span>
+<b id="delayedPercent">
+                                9.6%
+                            </b>
+</div>
+<div class="progress">
+<div class="red-bar" id="delayedBar">
+</div>
+</div>
+</div>
+</div>
+<!-- FUND UTILIZATION -->
+<div class="panel fund-panel">
+<div class="panel-title-row dashboard-panel-title fund-title-row">
+<h3><i class="fa-solid fa-chart-column"></i> Fund Utilization</h3>
+<a href="analytics.html">View Details <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<div class="chart-legend">
+<span><i class="legend-dot sanctioned-dot"></i>Sanctioned</span>
+<span><i class="legend-dot spent-dot"></i>Spent</span>
+</div>
+<div class="chart fund-chart-wrapper">
+<div class="y-axis">
+<span>100</span>
+<span>80</span>
+<span>60</span>
+<span>40</span>
+<span>20</span>
+<span>0</span>
+</div>
+<div class="chart" id="fundChart">
+</div>
+</div>
+<p class="chart-note">
+
+                        Top 5 districts by fund utilization
+                        (₹ Lakh)
+
+                    </p>
+</div>
+<!-- RISK DISTRIBUTION -->
+<div class="panel risk-panel">
+<div class="panel-title-row dashboard-panel-title">
+<h3><i class="fa-solid fa-chart-pie"></i> Risk Level Distribution</h3>
+<a href="alerts.html">View Details <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<div class="risk-circle">
+<div>
+<b id="riskTotal">
+                                10
+                            </b>
+<span>
+                                Total
+                            </span>
+</div>
+</div>
+<div class="risk-list">
+<p><span class="risk-label"><i class="legend-dot high-dot"></i>High Risk</span><span><b id="riskHigh">3</b><em id="riskHighPercent">0%</em></span></p>
+<p><span class="risk-label"><i class="legend-dot medium-dot"></i>Medium Risk</span><span><b id="riskMedium">1</b><em id="riskMediumPercent">0%</em></span></p>
+<p><span class="risk-label"><i class="legend-dot low-dot"></i>Low Risk</span><span><b id="riskLow">6</b><em id="riskLowPercent">0%</em></span></p>
+</div>
+</div>
+</section>
+<!-- =====================================================
+             LOWER SECTION
+        ====================================================== -->
+<section class="lower">
+<!-- HIGH RISK PROJECTS -->
+<div class="panel projects-panel">
+<div class="panel-header lower-panel-header">
+<div class="title-with-count">
+<h3><i class="fa-solid fa-triangle-exclamation danger-title-icon"></i> High Risk Projects</h3>
+<span class="count" id="highRiskCount">3</span>
+</div>
+<a class="view-all-link" href="alerts.html">View All <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<table>
+<thead>
+<tr>
+<th>
+                                    Project ID
+                                </th>
+<th>
+                                    Project
+                                </th>
+<th>
+                                    District
+                                </th>
+<th>
+                                    Risk
+                                </th>
+<th>
+                                    Issue
+                                </th>
+<th>
+</th>
+</tr>
+</thead>
+<tbody id="highRiskTable">
+</tbody>
+</table>
+</div>
+<!-- RECENT ALERTS -->
+<div class="panel">
+<div class="panel-header lower-panel-header">
+<h3><i class="fa-regular fa-bell danger-title-icon"></i> Recent Alerts</h3>
+<a class="view-all-link" href="alerts.html">View All <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<div id="recentAlerts">
+<p>
+                            Loading alerts...
+                        </p>
+</div>
+</div>
+<!-- RECENT PROJECTS -->
+<div class="panel recent-projects-panel">
+<div class="panel-header lower-panel-header">
+<div class="title-with-count">
+<h3><i class="fa-regular fa-file-lines primary-title-icon"></i> Recently Added Projects</h3>
+<span class="count" id="recentProjectCount">5</span>
+</div>
+<a class="view-all-link" href="projects.html">View All <i class="fa-solid fa-arrow-right"></i></a>
+</div>
+<div id="recentProjects">
+<p class="recent-loading">
+
+                            Loading recent projects...
+
+                        </p>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- =====================================================
+     RISK POPUP
+====================================================== -->
+<div class="popup" id="popup">
+<div class="popup-box">
+<h2>
+                AI Risk Analysis
+            </h2>
+<h3 id="projectID">
+</h3>
+<div class="risk-score" id="riskScore">
+</div>
+<p>
+<b>
+                    Risk Level:
+                </b>
+<span id="riskLevel">
+</span>
+</p>
+<div class="project-financials">
+<p>
+<b>
+                        Sanctioned Amount:
+                    </b>
+
+                    ₹<span id="sanctionedAmount"></span> L
+
+                </p>
+<p>
+<b>
+                        Spent Amount:
+                    </b>
+
+                    ₹<span id="spentAmount"></span> L
+
+                </p>
+<p>
+<b>
+                        Physical Progress:
+                    </b>
+<span id="projectProgress"></span>%
+
+                </p>
+</div>
+<hr/>
+<p>
+<b>
+                    Detected Risk Indicators:
+                </b>
+</p>
+<ul id="riskReasons">
+</ul>
+<div class="warning">
+
+                ⚠ Risk flags do not prove fraud.
+                Manual verification is recommended.
+
+            </div>
+<p>
+<b>
+                    Recommended Action:
+                </b>
+</p>
+<p id="recommendedAction">
+</p>
+<button onclick="closePopup()">
+
+                Close
+
+            </button>
+</div>
+</div>
+<!-- =====================================================
+     DASHBOARD JAVASCRIPT
+====================================================== -->
+<script>
+
+        const API_BASE = window.location.origin;
+
+
+
+        /* =====================================================
+           LOGIN CHECK
+        ====================================================== */
+
+        function isLoggedIn() {
+            return sessionStorage.getItem("mpladsLoggedIn") === "true";
+        }
+
+
+
+        /* =====================================================
+           HOME
+        ====================================================== */
+
+        function goToHome() {
+
+            window.location.href =
+                "home.html";
+
+        }
+
+
+
+        /* =====================================================
+           PROTECTED PAGES
+        ====================================================== */
+
+        function openProtectedPage(page) {
+
+            if (!isLoggedIn()) {
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+            window.location.href =
+                page;
+
+        }
+
+
+
+        /* =====================================================
+           PUBLIC DASHBOARD MODE
+        ====================================================== */
+
+        function applyDashboardAccess() {
+
+            const loggedIn =
+                isLoggedIn();
+
+
+            const sidebar =
+                document.getElementById(
+                    "dashboardSidebar"
+                );
+
+
+            const main =
+                document.getElementById(
+                    "dashboardMain"
+                );
+
+
+            const protectedItems =
+                document.querySelectorAll(
+                    ".protected-nav"
+                );
+
+
+            if (!loggedIn) {
+
+                /*
+                 * PUBLIC DASHBOARD
+                 *
+                 * Dashboard is accessible without login.
+                 * Officer navigation stays hidden.
+                 */
+
+                if (sidebar) {
+
+                    sidebar.style.display =
+                        "none";
+
+                }
+
+
+                if (main) {
+
+                    main.style.marginLeft =
+                        "0";
+
+                    main.style.width =
+                        "100%";
+
+                }
+
+
+                /*
+                 * Public navigation at top
+                 */
+
+                const header =
+                    document.querySelector(
+                        ".header"
+                    );
+
+
+                if (
+                    header &&
+                    !document.getElementById(
+                        "publicDashboardNav"
+                    )
+                ) {
+
+                    header.style.position =
+                        "relative";
+
+
+                    const nav =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    nav.id =
+                        "publicDashboardNav";
+
+
+                    nav.innerHTML = `
+
+                <div style="
+                    position:absolute;
+                    top:0;
+                    right:0;
+                    display:flex;
+                    align-items:center;
+                    gap:20px;
+                    z-index:20;
+                    font-size:14px;
+                    font-weight:600;
+                ">
+
+                    <a
+                        href="home.html"
+                        style="
+                            text-decoration:none;
+                            color:#0f172a;
+                        ">
+
+                        🏠 Home
+
+                    </a>
+
+
+                    <span
+                        style="
+                            color:#2563eb;
+                        ">
+
+                        📊 Dashboard
+
+                    </span>
+
+
+                    <button
+                        onclick="
+                            window.location.href='login.html'
+                        "
+                        style="
+                            border:none;
+                            background:#2563eb;
+                            color:white;
+                            padding:9px 18px;
+                            border-radius:8px;
+                            cursor:pointer;
+                            font-weight:600;
+                        ">
+
+                        LOGIN
+
+                    </button>
+
+                </div>
+
+            `;
+
+
+                    header.appendChild(
+                        nav
+                    );
+
+                }
+
+
+                /*
+                 * Protected buttons are disabled
+                 * visually but still redirect
+                 * through openProtectedPage().
+                 */
+
+                protectedItems.forEach(
+                    item => {
+
+                        item.style.display =
+                            "none";
+
+                    }
+                );
+
+            }
+
+            else {
+
+                /*
+                 * LOGGED-IN DASHBOARD
+                 */
+
+                if (sidebar) {
+
+                    sidebar.style.display =
+                        "";
+
+                }
+
+
+                if (main) {
+
+                    main.style.marginLeft =
+                        "";
+
+                    main.style.width =
+                        "";
+
+                }
+
+
+                const publicNav =
+                    document.getElementById(
+                        "publicDashboardNav"
+                    );
+
+
+                if (publicNav) {
+
+                    publicNav.remove();
+
+                }
+
+
+                protectedItems.forEach(
+                    item => {
+
+                        item.style.display =
+                            "";
+
+                    }
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           SIDEBAR
+        ====================================================== */
+
+        function toggleSidebar() {
+
+            document
+                .querySelector(".app")
+                .classList
+                .toggle(
+                    "sidebar-hidden"
+                );
+
+        }
+
+
+
+        /* =====================================================
+           DASHBOARD DATA
+        ====================================================== */
+
+        async function loadDashboardData() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/api/dashboard`
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Dashboard API failed"
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                /* TOTAL */
+
+                const total =
+                    document.getElementById(
+                        "totalProjects"
+                    );
+
+                if (total) {
+
+                    total.innerText =
+                        data.total_projects;
+
+                }
+
+
+                /* COMPLETED */
+
+                const completed =
+                    document.getElementById(
+                        "completedProjects"
+                    );
+
+                if (completed) {
+
+                    completed.innerText =
+                        data.completed;
+
+                }
+
+
+                /* ONGOING */
+
+                const ongoing =
+                    document.getElementById(
+                        "ongoingProjects"
+                    );
+
+                if (ongoing) {
+
+                    ongoing.innerText =
+                        data.ongoing;
+
+                }
+
+
+                /* DELAYED */
+
+                const delayed =
+                    document.getElementById(
+                        "delayedProjects"
+                    );
+
+                if (delayed) {
+
+                    delayed.innerText =
+                        data.delayed;
+
+                }
+
+
+                /* HIGH RISK */
+
+                const highRisk =
+                    document.getElementById(
+                        "highRisk"
+                    );
+
+                if (highRisk) {
+
+                    highRisk.innerText =
+                        data.high_risk;
+
+                }
+
+
+                const highRiskCount =
+                    document.getElementById(
+                        "highRiskCount"
+                    );
+
+                if (highRiskCount) {
+
+                    highRiskCount.innerText =
+                        data.high_risk;
+
+                }
+
+
+                /* RISK */
+
+                document.getElementById(
+                    "riskTotal"
+                ).innerText =
+                    data.total_projects;
+
+
+                document.getElementById(
+                    "riskHigh"
+                ).innerText =
+                    data.high_risk;
+
+
+                document.getElementById(
+                    "riskMedium"
+                ).innerText =
+                    data.medium_risk;
+
+
+                document.getElementById(
+                    "riskLow"
+                ).innerText =
+                    data.low_risk;
+
+
+                /*
+                 * STATUS PERCENTAGES
+                 */
+
+                const totalProjects =
+                    Number(
+                        data.total_projects || 0
+                    );
+
+
+                if (totalProjects > 0) {
+
+                    const completedPercent =
+                        (
+                            data.completed /
+                            totalProjects
+                        ) * 100;
+
+
+                    const ongoingPercent =
+                        (
+                            data.ongoing /
+                            totalProjects
+                        ) * 100;
+
+
+                    const delayedPercent =
+                        (
+                            data.delayed /
+                            totalProjects
+                        ) * 100;
+
+
+                    document.getElementById(
+                        "completedPercent"
+                    ).innerText =
+                        completedPercent.toFixed(1)
+                        + "%";
+
+
+                    document.getElementById(
+                        "ongoingPercent"
+                    ).innerText =
+                        ongoingPercent.toFixed(1)
+                        + "%";
+
+
+                    document.getElementById(
+                        "delayedPercent"
+                    ).innerText =
+                        delayedPercent.toFixed(1)
+                        + "%";
+
+
+                    document.getElementById(
+                        "completedBar"
+                    ).style.width =
+                        completedPercent + "%";
+
+
+                    document.getElementById(
+                        "ongoingBar"
+                    ).style.width =
+                        ongoingPercent + "%";
+
+
+                    document.getElementById(
+                        "delayedBar"
+                    ).style.width =
+                        delayedPercent + "%";
+
+                    const completedHint = document.getElementById("completedCardHint");
+                    const ongoingHint = document.getElementById("ongoingCardHint");
+                    const delayedHint = document.getElementById("delayedCardHint");
+
+                    if (completedHint) completedHint.innerText = completedPercent.toFixed(1) + "% of total";
+                    if (ongoingHint) ongoingHint.innerText = ongoingPercent.toFixed(1) + "% of total";
+                    if (delayedHint) delayedHint.innerText = delayedPercent.toFixed(1) + "% of total";
+
+                    const highPercent = (Number(data.high_risk || 0) / totalProjects) * 100;
+                    const mediumPercent = (Number(data.medium_risk || 0) / totalProjects) * 100;
+                    const lowPercent = (Number(data.low_risk || 0) / totalProjects) * 100;
+
+                    const highPercentEl = document.getElementById("riskHighPercent");
+                    const mediumPercentEl = document.getElementById("riskMediumPercent");
+                    const lowPercentEl = document.getElementById("riskLowPercent");
+                    if (highPercentEl) highPercentEl.innerText = highPercent.toFixed(1) + "%";
+                    if (mediumPercentEl) mediumPercentEl.innerText = mediumPercent.toFixed(1) + "%";
+                    if (lowPercentEl) lowPercentEl.innerText = lowPercent.toFixed(1) + "%";
+
+                    const riskCircle = document.querySelector(".dashboard-page .risk-circle");
+                    if (riskCircle) {
+                        const highEnd = highPercent;
+                        const mediumEnd = highPercent + mediumPercent;
+                        riskCircle.style.background = `conic-gradient(#ef4444 0 ${highEnd}%, #f59e0b ${highEnd}% ${mediumEnd}%, #22c55e ${mediumEnd}% 100%)`;
+                    }
+
+                }
+
+
+
+                /* =================================================
+                   FUND CHART
+                ================================================= */
+
+                const fundChart =
+                    document.getElementById(
+                        "fundChart"
+                    );
+
+
+                if (
+                    fundChart &&
+                    data.district_funds
+                ) {
+
+                    fundChart.innerHTML =
+                        "";
+
+
+                    const districts =
+                        Object.entries(
+                            data.district_funds
+                        )
+                            .sort(
+                                (a, b) =>
+                                    b[1].spent -
+                                    a[1].spent
+                            )
+                            .slice(0, 5);
+
+
+                    if (districts.length > 0) {
+
+                        const maxAmount =
+                            Math.max(
+                                ...districts.flatMap(
+                                    ([district, funds]) => [
+                                        funds.sanctioned,
+                                        funds.spent
+                                    ]
+                                )
+                            );
+
+
+                        districts.forEach(
+                            ([district, funds]) => {
+
+                                const item =
+                                    document.createElement(
+                                        "div"
+                                    );
+
+                                item.className =
+                                    "district-chart-item";
+
+
+                                const bars =
+                                    document.createElement(
+                                        "div"
+                                    );
+
+                                bars.className =
+                                    "bars";
+
+
+                                const sanctionedBar =
+                                    document.createElement(
+                                        "div"
+                                    );
+
+                                sanctionedBar.className =
+                                    "bar sanctioned-bar";
+
+
+                                const spentBar =
+                                    document.createElement(
+                                        "div"
+                                    );
+
+                                spentBar.className =
+                                    "bar spent-bar";
+
+
+                                const maxHeight =
+                                    120;
+
+
+                                sanctionedBar.style.height =
+                                    Math.max(
+                                        4,
+                                        (
+                                            funds.sanctioned /
+                                            maxAmount
+                                        ) * maxHeight
+                                    ) + "px";
+
+
+                                spentBar.style.height =
+                                    Math.max(
+                                        4,
+                                        (
+                                            funds.spent /
+                                            maxAmount
+                                        ) * maxHeight
+                                    ) + "px";
+
+
+                                sanctionedBar.title =
+                                    `${district} - Sanctioned: ₹${funds.sanctioned} L`;
+
+
+                                spentBar.title =
+                                    `${district} - Spent: ₹${funds.spent} L`;
+
+
+                                bars.appendChild(
+                                    sanctionedBar
+                                );
+
+
+                                bars.appendChild(
+                                    spentBar
+                                );
+
+
+                                const label =
+                                    document.createElement(
+                                        "span"
+                                    );
+
+
+                                label.innerText =
+                                    district;
+
+
+                                item.appendChild(
+                                    bars
+                                );
+
+
+                                item.appendChild(
+                                    label
+                                );
+
+
+                                fundChart.appendChild(
+                                    item
+                                );
+
+                            }
+                        );
+
+                    }
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Dashboard error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           HIGH RISK PROJECTS
+        ====================================================== */
+
+        async function loadHighRiskProjects() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/api/alerts`
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Alerts API failed"
+                    );
+
+                }
+
+
+                const alerts =
+                    await response.json();
+
+
+                const table =
+                    document.getElementById(
+                        "highRiskTable"
+                    );
+
+
+                if (!table) {
+
+                    return;
+
+                }
+
+
+                table.innerHTML =
+                    "";
+
+
+                const highRiskProjects =
+                    alerts.filter(
+                        project =>
+                            project.risk_level ===
+                            "High"
+                    );
+
+
+                highRiskProjects.forEach(
+                    project => {
+
+                        const row =
+                            document.createElement(
+                                "tr"
+                            );
+
+
+                        row.innerHTML = `
+
+                    <td>
+                        ${project.id}
+                    </td>
+
+                    <td>
+                        ${project.name}
+                    </td>
+
+                    <td>
+                        ${project.district}
+                    </td>
+
+                    <td>
+                        <b>
+                            ${project.risk_score}/100
+                        </b>
+                    </td>
+
+                    <td>
+
+                        <span class="high">
+                            HIGH
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            onclick="
+                                showDetails('${project.id}')
+                            ">
+
+                            Details
+
+                        </button>
+
+                    </td>
+
+                `;
+
+
+                        table.appendChild(
+                            row
+                        );
+
+                    }
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "High risk error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           PROJECT DETAILS
+        ====================================================== */
+
+        async function showDetails(
+            projectId
+        ) {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/api/alerts`
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Alerts API failed"
+                    );
+
+                }
+
+
+                const alerts =
+                    await response.json();
+
+
+                const project =
+                    alerts.find(
+                        p =>
+                            p.id === projectId
+                    );
+
+
+                if (!project) {
+
+                    return;
+
+                }
+
+
+                document.getElementById(
+                    "projectID"
+                ).innerText =
+                    project.id +
+                    " • " +
+                    project.name;
+
+
+                document.getElementById(
+                    "riskScore"
+                ).innerText =
+                    project.risk_score +
+                    "/100";
+
+
+                document.getElementById(
+                    "riskLevel"
+                ).innerText =
+                    project.risk_level;
+
+
+                document.getElementById(
+                    "sanctionedAmount"
+                ).innerText =
+                    project.sanctioned;
+
+
+                document.getElementById(
+                    "spentAmount"
+                ).innerText =
+                    project.spent;
+
+
+                document.getElementById(
+                    "projectProgress"
+                ).innerText =
+                    project.progress;
+
+
+                const reasonsContainer =
+                    document.getElementById(
+                        "riskReasons"
+                    );
+
+
+                reasonsContainer.innerHTML =
+                    "";
+
+
+                project.reasons.forEach(
+                    reason => {
+
+                        const li =
+                            document.createElement(
+                                "li"
+                            );
+
+
+                        li.innerText =
+                            reason;
+
+
+                        reasonsContainer.appendChild(
+                            li
+                        );
+
+                    }
+                );
+
+
+                const action =
+                    document.getElementById(
+                        "recommendedAction"
+                    );
+
+
+                if (
+                    project.risk_level ===
+                    "High"
+                ) {
+
+                    action.innerText =
+                        "Manual financial and physical verification is recommended.";
+
+                }
+
+                else if (
+                    project.risk_level ===
+                    "Medium"
+                ) {
+
+                    action.innerText =
+                        "Closer monitoring and verification of project progress is recommended.";
+
+                }
+
+                else {
+
+                    action.innerText =
+                        "Continue routine monitoring.";
+
+                }
+
+
+                document
+                    .getElementById(
+                        "popup"
+                    )
+                    .classList
+                    .add(
+                        "show"
+                    );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Details error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           CLOSE POPUP
+        ====================================================== */
+
+        function closePopup() {
+
+            const popup =
+                document.getElementById(
+                    "popup"
+                );
+
+
+            if (popup) {
+
+                popup.classList.remove(
+                    "show"
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           RECENT PROJECTS
+        ====================================================== */
+
+        async function loadRecentProjects() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/api/projects`
+                    );
+
+
+                const projects =
+                    await response.json();
+
+
+                const recent =
+                    projects
+                        .slice(-5)
+                        .reverse();
+
+
+                const container =
+                    document.getElementById(
+                        "recentProjects"
+                    );
+
+
+                const count =
+                    document.getElementById(
+                        "recentProjectCount"
+                    );
+
+
+                if (!container) {
+
+                    return;
+
+                }
+
+
+                if (count) {
+
+                    count.innerText =
+                        recent.length;
+
+                }
+
+
+                container.innerHTML =
+                    "";
+
+
+                recent.forEach(
+                    project => {
+
+                        const item =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        item.className =
+                            "recent-project";
+
+
+                        item.innerHTML = `
+
+                    <div
+                        class="recent-project-icon">
+
+                        📋
+
+                    </div>
+
+
+                    <div
+                        class="recent-project-info">
+
+                        <strong>
+                            ${project.name}
+                        </strong>
+
+                        <small>
+                            ${project.district}
+                            •
+                            ${project.id}
+                        </small>
+
+                    </div>
+
+                `;
+
+
+                        container.appendChild(
+                            item
+                        );
+
+                    }
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Recent projects error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           RECENT ALERTS
+        ====================================================== */
+
+        async function loadRecentAlerts() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE}/api/alerts`
+                    );
+
+
+                const alerts =
+                    await response.json();
+
+
+                const container =
+                    document.getElementById(
+                        "recentAlerts"
+                    );
+
+
+                if (!container) {
+
+                    return;
+
+                }
+
+
+                container.innerHTML =
+                    "";
+
+
+                alerts.forEach(
+                    project => {
+
+                        const alert =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        alert.className =
+                            "alert";
+
+
+                        const icon =
+                            project.risk_level ===
+                                "High"
+                                ? "🔴"
+                                : "🟠";
+
+
+                        const reason =
+                            project.reasons &&
+                                project.reasons.length
+                                ? project.reasons[0]
+                                : "Risk indicator detected";
+
+
+                        alert.innerHTML = `
+
+                    ${icon}
+
+                    <b>
+                        ${project.risk_level}
+                        Risk
+                    </b>
+
+                    <small>
+
+                        ${project.id}
+                        •
+                        ${project.district}
+                        •
+
+                        ${reason}
+
+                    </small>
+
+                `;
+
+
+                        container.appendChild(
+                            alert
+                        );
+
+                    }
+                );
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Recent alerts error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           START
+        ====================================================== */
+
+        applyDashboardAccess();
+
+        if (isLoggedIn()) {
+            loadDashboardData();
+            loadHighRiskProjects();
+            loadRecentProjects();
+            loadRecentAlerts();
+        }
+function applyDashboardAccess() {
+
+    const loggedIn = isLoggedIn();
+
+    const sidebar = document.getElementById("dashboardSidebar");
+    const main = document.getElementById("dashboardMain");
+    const protectedItems = document.querySelectorAll(".protected-nav");
+    const sidebarToggle = document.getElementById("sidebarToggle"); // ADD THIS
+
+    if (!loggedIn) {
+
+        if (sidebar) {
+            sidebar.style.display = "none";
+        }
+
+        if (main) {
+            main.style.marginLeft = "0";
+            main.style.width = "100%";
+        }
+
+        // ADD THIS — hide the ☰ button, nothing to toggle without a sidebar
+        if (sidebarToggle) {
+            sidebarToggle.style.display = "none";
+        }
+
+        const header = document.querySelector(".header");
+
+        if (header && !document.getElementById("publicDashboardNav")) {
+
+            header.style.position = "relative";
+
+            const nav = document.createElement("div");
+            nav.id = "publicDashboardNav";
+
+            nav.innerHTML = `
+                <div style="
+                    position:absolute;
+                    top:0;
+                    right:0;
+                    display:flex;
+                    align-items:center;
+                    gap:20px;
+                    z-index:20;
+                    font-size:14px;
+                    font-weight:600;
+                ">
+                    <a href="home.html" style="text-decoration:none;color:#0f172a;">
+                        🏠 Home
+                    </a>
+                    <span style="color:#2563eb;">
+                        📊 Dashboard
+                    </span>
+                    <button
+                        onclick="window.location.href='login.html'"
+                        style="
+                            border:none;
+                            background:#2563eb;
+                            color:white;
+                            padding:9px 18px;
+                            border-radius:8px;
+                            cursor:pointer;
+                            font-weight:600;
+                        ">
+                        LOGIN
+                    </button>
+                </div>
+            `;
+
+            header.appendChild(nav);
+        }
+
+        protectedItems.forEach(item => {
+            item.style.display = "none";
+        });
+
+    } else {
+
+        if (sidebar) {
+            sidebar.style.display = "";
+        }
+
+        if (main) {
+            main.style.marginLeft = "";
+            main.style.width = "";
+        }
+
+        // ADD THIS — restore the toggle for logged-in users
+        if (sidebarToggle) {
+            sidebarToggle.style.display = "";
+        }
+
+        const publicNav = document.getElementById("publicDashboardNav");
+
+        if (publicNav) {
+            publicNav.remove();
+        }
+
+        protectedItems.forEach(item => {
+            item.style.display = "";
+        });
+    }
+}
+
+    </script>
+<script src="public_dashboard.js"></script>
+</body>
+</html>
